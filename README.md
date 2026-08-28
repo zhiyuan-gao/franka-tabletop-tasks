@@ -5,7 +5,7 @@ collection, imitation learning, and SKRL reinforcement learning. The package
 uses a single RGB policy camera, Franka proprioception, and optional
 simulator-only state for the critic.
 
-[View one successful demonstration for each task](docs/demos/index.html).
+[View one successful demonstration for each task](https://zhiyuan-gao.github.io/franka-tabletop-tasks/demos/).
 
 ## Requirements
 
