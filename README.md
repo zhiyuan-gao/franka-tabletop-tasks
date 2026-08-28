@@ -38,6 +38,122 @@ The repository contains the project-specific USD, texture, calibration, and
 background files required at runtime. The first run still needs internet
 access to download standard Isaac assets such as the Franka and YCB sugar box.
 
+## Running on the ICRA2027 workstation
+
+This section records the machine-specific paths used on the current ICRA2027
+workstation. It supplements the portable installation instructions above and
+is not required on other machines.
+
+The authoritative checkout, downloaded demonstrations, and Isaac Lab Python
+executable are located at:
+
+```text
+Repository:
+/raid/home/than/zhiyuan/ICRA2027/franka-tabletop-tasks
+
+Dataset:
+/raid/home/than/zhiyuan/ICRA2027/franka-tabletop-tasks/datasets
+
+Isaac Lab Python:
+/raid/home/than/miniforge3/envs/lw_benchhub/bin/python
+```
+
+`track-b-envs` is installed in editable mode in this Python environment. Do
+not use the system Python, because it does not provide the matching Isaac Sim
+and Isaac Lab packages. A convenient shell setup is:
+
+```bash
+export TRACK_B_REPO=/raid/home/than/zhiyuan/ICRA2027/franka-tabletop-tasks
+export ISAAC_PYTHON=/raid/home/than/miniforge3/envs/lw_benchhub/bin/python
+cd "$TRACK_B_REPO"
+```
+
+Verify the editable installation and the six task registrations with:
+
+```bash
+"$ISAAC_PYTHON" -c \
+  "import track_b_envs; print(track_b_envs.TASK_IDS)"
+```
+
+The following CPU command has been validated as a complete, minimal PPO
+update on this workstation:
+
+```bash
+"$ISAAC_PYTHON" scripts/rl/train.py \
+  --task push_cube_to_region \
+  --smoke \
+  --headless \
+  --device cpu
+```
+
+Use a CUDA device for a normal training run:
+
+```bash
+"$ISAAC_PYTHON" scripts/rl/train.py \
+  --task push_object_to_region \
+  --num-envs 4 \
+  --headless \
+  --device cuda:0
+```
+
+Training outputs are written under `outputs/rl/skrl/` unless `--log-dir` is
+specified. The local `datasets/` and `outputs/` directories are ignored by
+Git and must not be committed.
+
+### Local demonstration dataset
+
+The downloaded private Hugging Face dataset occupies approximately 11 GB and
+contains 400 successful episodes. Its local layout is:
+
+```text
+datasets/
+├── primary_50/
+│   ├── push_object_to_region/       # 50 episodes
+│   ├── push_cube_to_region/         # 50 episodes
+│   ├── drawer_opening/              # 50 episodes
+│   ├── cabinet_opening/             # 50 episodes
+│   ├── object_to_drawer/            # 50 episodes
+│   └── nut_pouring/                 # 50 episodes
+└── additional_50_seed20260927/
+    ├── object_to_drawer/            # 50 additional episodes
+    └── nut_pouring/                 # 50 additional episodes
+```
+
+Each task directory contains:
+
+```text
+manifest.json
+action_replay_report.json
+episodes/
+└── episode_000000.npz
+```
+
+Each compressed episode stores synchronized arrays:
+
+| Key | Shape and content |
+|---|---|
+| `observation.rgb` | `uint8 [T, 224, 224, 3]` composite policy RGB |
+| `observation.proprio` | `float32 [T, 25]` deployable Franka state |
+| `observation.oracle` | `float32 [T, task-dependent]` simulator-only state |
+| `action` | `float32 [T, 7]` normalized relative Cartesian and binary-gripper action |
+| `reward` | Per-step environment reward |
+| `terminated`, `truncated`, `success` | Per-step episode flags |
+| `timestamp_s` | Monotonic 20 Hz control timestamps |
+
+`manifest.json` records task metadata, episode paths, reset seeds, and initial
+states. `action_replay_report.json` records the stored-action PhysX replay
+audit. The visual actor may consume only `observation.rgb` and
+`observation.proprio`; the oracle state is reserved for the critic, experts,
+analysis, and debugging.
+
+The dataset repository is private. Never place a Hugging Face access token in
+this README, the Git repository, scripts, or committed configuration files.
+
+The validated CPU smoke run can print PhysX warnings when a reset event tries
+to write velocity to a kinematic scene object. These warnings did not prevent
+the PPO smoke update from completing, but the reset behavior should be audited
+before large training runs.
+
 ## Verify the installation
 
 First verify that the package imports and all six tasks are registered:
