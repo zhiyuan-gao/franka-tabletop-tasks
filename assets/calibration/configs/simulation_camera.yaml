@@ -1,0 +1,41 @@
+version: 1
+status: calibrated_for_first_real_background_alignment
+
+world_frame: panda_link0
+
+image:
+  width: 1280
+  height: 720
+  background: ../background/empty_background.png
+  background_is_undistorted: true
+  crop: null
+
+camera_model:
+  type: pinhole
+  distortion_model: none
+  distortion_coefficients: [0.0, 0.0, 0.0, 0.0, 0.0]
+  camera_matrix:
+    - [956.573303223, 0.0, 642.299030749]
+    - [0.0, 971.536132812, 349.211118028]
+    - [0.0, 0.0, 1.0]
+  horizontal_fov_deg: 67.569386461
+  vertical_fov_deg: 40.664092176
+
+camera_pose:
+  recommended_transform_file: ../transforms/T_base_from_camera_usd.npy
+  transform_name: T_base_from_camera_usd
+  local_axes: usd
+  units: m
+  matrix:
+    - [-0.876568655261, -0.291497201307, 0.382957927511, 0.901698180487]
+    - [0.481219767391, -0.518599049913, 0.706740801781, 0.624159857401]
+    - [-0.007411348405, 0.803793759032, 0.594861887210, 0.814704578397]
+    - [0.0, 0.0, 0.0, 1.0]
+
+opencv_pose_file: ../transforms/T_base_from_camera_cv.npy
+
+notes:
+  - Isaac world must coincide with Franka panda_link0.
+  - The recommended pose uses standard USD camera axes (+X right, +Y up, -Z forward).
+  - If an Isaac API already accepts ROS/OpenCV camera axes, use the OpenCV pose and do not apply the axis conversion twice.
+  - Do not use the 640x480 ROS preview intrinsics for this background.

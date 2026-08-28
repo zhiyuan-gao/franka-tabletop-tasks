@@ -1,0 +1,101 @@
+schema_version: 1
+
+tasks:
+  push_object_to_region:
+    instruction: Push the object into the target region.
+    object:
+      dataset: YCB
+      id: "004"
+      canonical_name: sugar_box
+      runtime_asset: official_isaac_ycb_axis_aligned_physics_url
+    implementation_contract:
+      stable_tabletop_orientation: true
+      actor_receives_object_pose: false
+      critic_receives_object_pose: true
+      success_uses_object_footprint: true
+
+  push_cube_to_region:
+    instruction: Push the red cube into the target region.
+    object:
+      canonical_name: red_cube
+      runtime_asset: procedural_cuboid
+      size_m: [0.07, 0.07, 0.05]
+      mass_kg: 0.18
+    implementation_contract:
+      stable_tabletop_orientation: true
+      actor_receives_object_pose: false
+      critic_receives_object_pose: true
+      success_uses_object_footprint: true
+
+  drawer_opening:
+    instruction: Open the upper drawer.
+    cabinet:
+      runtime_asset: assets/task_assets/cabinets/TwoDrawerWhiteCabinet.usda
+      root_position_m: [0.72, -0.18, 0.0]
+      root_yaw_deg: 35.0
+      active_joint: UpperDrawerJoint
+      handle_position_m: [0.6110, -0.0244, 0.2800]
+    implementation_contract:
+      starts_closed: true
+      full_open_position_m: 0.22
+      handle_visible_in_policy_camera: true
+      handle_reachable_from_franka: true
+      swept_geometry_checked: true
+      minimum_swept_distance_to_base_center_m: 0.36
+
+  cabinet_opening:
+    instruction: Open the cabinet door.
+    cabinet:
+      runtime_asset: assets/task_assets/cabinets/SingleDoorWhiteCabinet.usda
+      root_position_m: [0.75, -0.18, 0.0]
+      root_yaw_deg: 35.0
+      active_joint: DoorHingeJoint
+      handle_position_m: [0.7209, 0.0316, 0.2620]
+    implementation_contract:
+      starts_closed: true
+      full_open_angle_deg: 100.0
+      handle_visible_in_policy_camera: true
+      handle_reachable_from_franka: true
+      swept_geometry_checked: true
+      minimum_swept_distance_to_base_center_m: 0.28
+
+  object_to_drawer:
+    instruction: Pick up the banana and place it inside the drawer.
+    object:
+      dataset: YCB
+      id: "011"
+      canonical_name: banana
+      visual_asset: assets/task_assets/ycb/011_banana.usd
+      runtime_asset: assets/task_assets/ycb/011_banana_physics.usda
+      initial_position_m: [0.6626, -0.0981, 0.3841]
+      initial_orientation: convex_hull_stable_broad_side_rest
+    cabinet:
+      runtime_asset: assets/task_assets/cabinets/TwoDrawerWhiteCabinet.usda
+      root_position_m: [0.72, -0.18, 0.0]
+      root_yaw_deg: 35.0
+    implementation_contract:
+      actor_receives_object_pose: false
+      critic_receives_object_pose: true
+      banana_specific_grasp_candidates: true
+      dynamic_rigid_body: true
+      collision_approximation: convex_decomposition
+      mass_kg: 0.066
+      drawer_full_open_position_m: 0.22
+      drawer_swept_geometry_checked: true
+      success_requires_inside_drawer: true
+      success_requires_gripper_release: true
+      success_requires_low_velocity_settle_steps: 6
+      expert_uses_object_state_overwrite: false
+      drawer_retention_after_release: explicit_pd_force_no_state_overwrite
+
+  nut_pouring:
+    instruction: Pour the nut from the blue cup into the purple bowl.
+    source_cup:
+      runtime_asset: assets/task_assets/pouring/BluePouringCup.usda
+      initial_position_m: [0.43, -0.18, 0.001]
+    target_bowl:
+      runtime_asset: assets/task_assets/pouring/PurplePouringBowl.usda
+      initial_position_m: [0.52, -0.04, 0.001]
+    implementation_contract:
+      cup_visible_and_reachable: true
+      bowl_visible_and_reachable: true

@@ -1,0 +1,535 @@
+#usda 1.0
+(
+    defaultPrim = "TwoDrawerWhiteCabinet"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "TwoDrawerWhiteCabinet" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI"]
+    kind = "component"
+)
+{
+    custom double cabinet:depth = 0.34
+    custom double cabinet:drawerDepth = 0.285
+    custom double cabinet:drawerFrontHeight = 0.13
+    custom double cabinet:drawerFrontWidth = 0.345
+    custom string cabinet:frontAxis = "+Y"
+    custom double cabinet:handleWidth = 0.11
+    custom double cabinet:height = 0.37
+    custom string cabinet:referenceModel = "ML-Design ML-093"
+    custom double cabinet:width = 0.38
+
+    def Scope "Looks"
+    {
+        def Material "WhiteMelamine"
+        {
+            token outputs:surface.connect = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.94, 0.94, 0.94)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.38
+                token outputs:surface
+            }
+        }
+
+        def Material "Aluminum"
+        {
+            token outputs:surface.connect = </TwoDrawerWhiteCabinet/Looks/Aluminum/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.64, 0.66)
+                float inputs:metallic = 0.82
+                float inputs:roughness = 0.24
+                token outputs:surface
+            }
+        }
+
+        def Material "BlackDrawerRail"
+        {
+            token outputs:surface.connect = </TwoDrawerWhiteCabinet/Looks/BlackDrawerRail/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.025, 0.025, 0.025)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.33
+                token outputs:surface
+            }
+        }
+    }
+
+    def Scope "PhysicsMaterials"
+    {
+        def Material "CabinetSurface" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.38
+            float physics:restitution = 0.02
+            float physics:staticFriction = 0.45
+        }
+    }
+
+    def Xform "CabinetBody" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 6.6
+        bool physics:rigidBodyEnabled = 1
+
+        def Cube "LeftPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.015, 0.34, 0.349)
+            double3 xformOp:translate = (-0.1825, 0, 0.1805)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RightPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.015, 0.34, 0.349)
+            double3 xformOp:translate = (0.1825, 0, 0.1805)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BottomShelf" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.328, 0.015)
+            double3 xformOp:translate = (0, -0.006, 0.0795)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "TopPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.38, 0.34, 0.015)
+            double3 xformOp:translate = (0, 0, 0.3625)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BackPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.012, 0.349)
+            double3 xformOp:translate = (0, -0.164, 0.1805)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "MiddleDivider" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.328, 0.012)
+            double3 xformOp:translate = (0, -0.006, 0.217)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FrontPlinth" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.015, 0.073)
+            double3 xformOp:translate = (0, 0.1625, 0.042499999999999996)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootFrontLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (-0.17200000000000001, 0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootFrontRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (0.17200000000000001, 0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootBackLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (-0.17200000000000001, -0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootBackRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (0.17200000000000001, -0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def PhysicsFixedJoint "FixedBaseJoint"
+    {
+        rel physics:body1 = </TwoDrawerWhiteCabinet/CabinetBody>
+    }
+
+    def Xform "LowerDrawer" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 1.7
+        bool physics:rigidBodyEnabled = 1
+        double3 xformOp:translate = (0, 0, 0.15)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Front" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.345, 0.015, 0.13)
+            double3 xformOp:translate = (0, 0.1625, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Bottom" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.325, 0.285, 0.01)
+            double3 xformOp:translate = (0, 0.012500000000000039, -0.053000000000000005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "LeftWall" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.285, 0.105)
+            double3 xformOp:translate = (-0.15749999999999997, 0.012500000000000039, 0.00449999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RightWall" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.285, 0.105)
+            double3 xformOp:translate = (0.15749999999999997, 0.012500000000000039, 0.00449999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BackWall" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.325, 0.01, 0.105)
+            double3 xformOp:translate = (0, -0.12499999999999994, 0.00449999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RailLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/BlackDrawerRail>
+            double size = 1
+            float3 xformOp:scale = (0.006, 0.21, 0.015)
+            double3 xformOp:translate = (-0.16549999999999998, -0.0024999999999999606, -0.002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RailRight" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/BlackDrawerRail>
+            double size = 1
+            float3 xformOp:scale = (0.006, 0.21, 0.015)
+            double3 xformOp:translate = (0.16549999999999998, -0.0024999999999999606, -0.002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleBar" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.11, 0.011, 0.011)
+            double3 xformOp:translate = (0, 0.19, -0.004)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleSupportLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.026, 0.016)
+            double3 xformOp:translate = (-0.046, 0.17700000000000002, -0.004)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleSupportRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.026, 0.016)
+            double3 xformOp:translate = (0.046, 0.17700000000000002, -0.004)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def PhysicsPrismaticJoint "LowerDrawerJoint"
+    {
+        uniform token physics:axis = "Y"
+        rel physics:body0 = </TwoDrawerWhiteCabinet/CabinetBody>
+        rel physics:body1 = </TwoDrawerWhiteCabinet/LowerDrawer>
+        bool physics:collisionEnabled = 0
+        point3f physics:localPos0 = (0, 0, 0.15)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = 0
+        float physics:upperLimit = 0.22
+    }
+
+    def Xform "UpperDrawer" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 1.7
+        bool physics:rigidBodyEnabled = 1
+        double3 xformOp:translate = (0, 0, 0.284)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Front" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.345, 0.015, 0.13)
+            double3 xformOp:translate = (0, 0.1625, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "Bottom" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.325, 0.285, 0.01)
+            double3 xformOp:translate = (0, 0.012500000000000039, -0.053000000000000005)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "LeftWall" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.285, 0.105)
+            double3 xformOp:translate = (-0.15749999999999997, 0.012500000000000039, 0.00449999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RightWall" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.01, 0.285, 0.105)
+            double3 xformOp:translate = (0.15749999999999997, 0.012500000000000039, 0.00449999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BackWall" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.325, 0.01, 0.105)
+            double3 xformOp:translate = (0, -0.12499999999999994, 0.00449999999999999)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RailLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/BlackDrawerRail>
+            double size = 1
+            float3 xformOp:scale = (0.006, 0.21, 0.015)
+            double3 xformOp:translate = (-0.16549999999999998, -0.0024999999999999606, -0.002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RailRight" (
+            prepend apiSchemas = ["MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/BlackDrawerRail>
+            double size = 1
+            float3 xformOp:scale = (0.006, 0.21, 0.015)
+            double3 xformOp:translate = (0.16549999999999998, -0.0024999999999999606, -0.002)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleBar" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.11, 0.011, 0.011)
+            double3 xformOp:translate = (0, 0.19, -0.004)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleSupportLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.026, 0.016)
+            double3 xformOp:translate = (-0.046, 0.17700000000000002, -0.004)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleSupportRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </TwoDrawerWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </TwoDrawerWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.026, 0.016)
+            double3 xformOp:translate = (0.046, 0.17700000000000002, -0.004)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def PhysicsPrismaticJoint "UpperDrawerJoint"
+    {
+        uniform token physics:axis = "Y"
+        rel physics:body0 = </TwoDrawerWhiteCabinet/CabinetBody>
+        rel physics:body1 = </TwoDrawerWhiteCabinet/UpperDrawer>
+        bool physics:collisionEnabled = 0
+        point3f physics:localPos0 = (0, 0, 0.284)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = 0
+        float physics:upperLimit = 0.22
+    }
+}
