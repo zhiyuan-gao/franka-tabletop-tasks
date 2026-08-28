@@ -54,15 +54,23 @@ Repository:
 Dataset:
 /raid/home/than/zhiyuan/ICRA2027/franka-tabletop-tasks/datasets
 
+Miniforge/Conda environment:
+lw_benchhub
+
 Isaac Lab Python:
 /raid/home/than/miniforge3/envs/lw_benchhub/bin/python
 ```
 
-`track-b-envs` is installed in editable mode in this Python environment. Do
-not use the system Python, because it does not provide the matching Isaac Sim
-and Isaac Lab packages. A convenient shell setup is:
+This workstation uses the Miniforge/Conda environment `lw_benchhub`.
+`track-b-envs` is installed with pip in editable mode inside that environment.
+The repository does not use uv on this workstation. Do not use the system
+Python, because it does not provide the matching Isaac Sim and Isaac Lab
+packages. Activate the environment and enter the repository with:
 
 ```bash
+source /raid/home/than/miniforge3/etc/profile.d/conda.sh
+conda activate lw_benchhub
+
 export TRACK_B_REPO=/raid/home/than/zhiyuan/ICRA2027/franka-tabletop-tasks
 export ISAAC_PYTHON=/raid/home/than/miniforge3/envs/lw_benchhub/bin/python
 cd "$TRACK_B_REPO"
