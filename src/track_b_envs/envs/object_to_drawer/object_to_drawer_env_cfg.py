@@ -174,7 +174,7 @@ class ObjectToDrawerEnvCfg(FrankaCubeLiftEnvCfg):
         self.scene.cabinet.actuators["drawers"].stiffness = 0.0
         self.actions.arm_action.scale = (0.05, 0.05, 0.05, 0.08, 0.08, 0.08)
         self.decimation = CONTROL_DECIMATION
-        self.episode_length_s = 40.0
+        self.episode_length_s = 60.0
         self.sim.dt = PHYSICS_DT_S
         self.sim.render_interval = self.decimation
         self.sim.physx.friction_correlation_distance = 0.00625
