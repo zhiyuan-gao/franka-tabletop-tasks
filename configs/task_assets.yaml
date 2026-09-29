@@ -61,18 +61,23 @@ tasks:
 
   object_to_drawer:
     instruction: Pick up the banana and place it inside the drawer.
+    layout_reference:
+      video: /raid/home/than/four_demo_videos/banana_in_drawer_then_close_episode_000048.mp4
+      frame_index: 0
+      registration: calibrated board pose and cabinet top-corner back-projection
+      rectangle_fit_corner_residual_mm: [3.52, 3.97, 3.70, 3.15]
     object:
       dataset: YCB
       id: "011"
       canonical_name: banana
       visual_asset: assets/task_assets/ycb/011_banana.usd
       runtime_asset: assets/task_assets/ycb/011_banana_physics.usda
-      initial_position_m: [0.6626, -0.0981, 0.3841]
+      initial_position_m: [0.5887, -0.4228, 0.3841]
       initial_orientation: convex_hull_stable_broad_side_rest
     cabinet:
       runtime_asset: assets/task_assets/cabinets/TwoDrawerWhiteCabinet.usda
-      root_position_m: [0.72, -0.18, 0.0]
-      root_yaw_deg: 35.0
+      root_position_m: [0.6039, -0.5216, 0.0]
+      root_yaw_deg: 8.7489
     implementation_contract:
       actor_receives_object_pose: false
       critic_receives_object_pose: true
@@ -99,3 +104,48 @@ tasks:
     implementation_contract:
       cup_visible_and_reachable: true
       bowl_visible_and_reachable: true
+
+  cup_to_drawer:
+    instruction: Grasp the cup from above and place it into the open upper drawer.
+    cup:
+      runtime_asset: assets/task_assets/pouring/BluePouringCup.usda
+      initial_position_m: [0.5607, -0.3914, 0.371]
+      initial_position_cabinet_local_m: [0.035, 0.08, 0.371]
+      initial_support: cabinet_top
+    cabinet:
+      runtime_asset: assets/task_assets/cabinets/TwoDrawerWhiteCabinet.usda
+      root_position_m: [0.5383, -0.4758, 0.0]
+      root_yaw_deg: 8.7489
+      active_joint: UpperDrawerJoint
+      initial_open_position_m: 0.22
+    implementation_contract:
+      grasp_direction: top_down
+      target: upper_drawer_interior
+      drawer_starts_open: true
+      cup_starts_upright: true
+      success_requires_upright_cup: true
+      success_requires_gripper_release: true
+      expert_uses_root_pose_overwrite: false
+
+  cup_to_cabinet_top:
+    instruction: Side-grasp the cup below the open drawer and place it on the cabinet top.
+    cup:
+      runtime_asset: assets/task_assets/pouring/BluePouringCup.usda
+      initial_position_m: [0.5175, -0.1107, 0.001]
+      initial_position_cabinet_local_m: [0.035, 0.364, 0.001]
+      initial_support: tabletop_below_extended_upper_drawer
+    cabinet:
+      runtime_asset: assets/task_assets/cabinets/TwoDrawerWhiteCabinet.usda
+      root_position_m: [0.5383, -0.4758, 0.0]
+      root_yaw_deg: 8.7489
+      active_joint: UpperDrawerJoint
+      initial_open_position_m: 0.22
+    implementation_contract:
+      grasp_direction: side_from_table_front
+      extraction_before_lift: true
+      target: cabinet_top
+      drawer_starts_open: true
+      cup_starts_upright: true
+      success_requires_upright_cup: true
+      success_requires_gripper_release: true
+      expert_uses_root_pose_overwrite: false

@@ -187,9 +187,18 @@ def opening_task_state(env, joint_name: str) -> dict[str, torch.Tensor]:
 def object_to_drawer_task_state(env) -> dict[str, torch.Tensor]:
     """Return all physical state used by the long-horizon collection expert."""
 
+    return drawer_subtask_state(env, joint_name="UpperDrawerJoint")
+
+
+def drawer_subtask_state(
+    env, joint_name: str | None = None
+) -> dict[str, torch.Tensor]:
+    """Return object, selected drawer, handle, and robot state in the base frame."""
+
     from isaaclab.utils.math import quat_apply_inverse, subtract_frame_transforms
 
-    state = opening_task_state(env, "UpperDrawerJoint")
+    joint_name = joint_name or env.cfg.active_joint_name
+    state = opening_task_state(env, joint_name)
     robot = env.scene["robot"]
     obj = env.scene["object"]
     target_frame = env.scene["drawer_interior_frame"]
@@ -266,5 +275,53 @@ def nut_pouring_task_state(env) -> dict[str, torch.Tensor]:
             root_quat, nut.data.root_ang_vel_w
         ),
         "bowl_pose": pose(bowl),
+        "finger_positions": robot.data.joint_pos[:, finger_ids],
+    }
+
+
+def cup_cabinet_task_state(env) -> dict[str, torch.Tensor]:
+    """Return cup, placement target, open drawer, and gripper state."""
+
+    from isaaclab.utils.math import quat_apply_inverse, subtract_frame_transforms
+
+    robot = env.scene["robot"]
+    ee_frame = env.scene["ee_frame"]
+    cup = env.scene["object"]
+    cabinet = env.scene["cabinet"]
+    target = env.scene["cup_target_frame"]
+    root_pos, root_quat = robot.data.root_pos_w, robot.data.root_quat_w
+
+    def pose(position, quaternion):
+        position_b, quaternion_b = subtract_frame_transforms(
+            root_pos, root_quat, position, quaternion
+        )
+        return torch.cat((position_b, quaternion_b), dim=-1)
+
+    upper_joint_ids, names = cabinet.find_joints("UpperDrawerJoint")
+    if names != ["UpperDrawerJoint"]:
+        raise RuntimeError(f"expected UpperDrawerJoint, found {names}")
+    finger_ids, names = robot.find_joints("panda_finger_joint.*")
+    if len(names) != 2:
+        raise RuntimeError(f"expected two Franka fingers, found {names}")
+
+    return {
+        "ee_pose": pose(
+            ee_frame.data.target_pos_w[..., 0, :],
+            ee_frame.data.target_quat_w[..., 0, :],
+        ),
+        "cup_pose": pose(cup.data.root_pos_w, cup.data.root_quat_w),
+        "cup_linear_velocity": quat_apply_inverse(
+            root_quat, cup.data.root_lin_vel_w
+        ),
+        "cup_angular_velocity": quat_apply_inverse(
+            root_quat, cup.data.root_ang_vel_w
+        ),
+        "target_pose": pose(
+            target.data.target_pos_w[..., 0, :],
+            target.data.target_quat_w[..., 0, :],
+        ),
+        "cabinet_pose": pose(cabinet.data.root_pos_w, cabinet.data.root_quat_w),
+        "drawer_joint_position": cabinet.data.joint_pos[:, upper_joint_ids].squeeze(-1),
+        "drawer_joint_velocity": cabinet.data.joint_vel[:, upper_joint_ids].squeeze(-1),
         "finger_positions": robot.data.joint_pos[:, finger_ids],
     }

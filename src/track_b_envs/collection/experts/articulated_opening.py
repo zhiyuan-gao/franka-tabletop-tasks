@@ -24,12 +24,13 @@ class ArticulatedOpeningExpert:
     APPROACH_HANDLE = 2
     GRASP = 3
     PULL = 4
+    HOLD_OPEN = 5
 
-    def __init__(self, env, *, task: str):
+    def __init__(self, env, *, task: str, joint_name: str | None = None):
         if task not in {"drawer_opening", "cabinet_opening"}:
             raise ValueError(f"unsupported opening expert task: {task}")
         self.task = task
-        self.joint_name = (
+        self.joint_name = joint_name or (
             "UpperDrawerJoint" if task == "drawer_opening" else "DoorHingeJoint"
         )
         self.num_envs = env.num_envs
@@ -46,6 +47,12 @@ class ArticulatedOpeningExpert:
             self.num_envs, dtype=torch.bool, device=self.device
         )
         self.command_pose = torch.zeros((self.num_envs, 7), device=self.device)
+        self.hold_open_pose = torch.zeros_like(self.command_pose)
+        # The calibrated subtask now requires 21 cm (22 cm mechanical limit).
+        # Brake the Cartesian command before pulling against the hard stop.
+        self.near_full_open_task = (
+            task == "drawer_opening" and getattr(env.cfg, "task_mode", None) == "open"
+        )
 
     def reset(self, env) -> None:
         self.state.zero_()
@@ -54,6 +61,7 @@ class ArticulatedOpeningExpert:
         self.grasp_verified.zero_()
         state = opening_task_state(env, self.joint_name)
         self.command_pose.copy_(state["ee_pose"])
+        self.hold_open_pose.copy_(state["ee_pose"])
         if self.task == "drawer_opening":
             cabinet_quaternion = env.scene["cabinet"].data.root_quat_w
             from isaaclab.utils.math import quat_apply
@@ -119,6 +127,11 @@ class ArticulatedOpeningExpert:
         # handle puts the bar inside the finger pads; the previous +5 mm front
         # offset left the bar outside the fingertips and enabled palm hooking.
         base_penetration = 0.008 if self.task == "cabinet_opening" else 0.006
+        if self.task == "drawer_opening" and self.joint_name == "LowerDrawerJoint":
+            # The lower handle needs 2 mm more insertion before closing:
+            # the shallower first grasp closes in front of the bar. Use the
+            # verified pad depth immediately instead of recovering on a retry.
+            base_penetration = 0.008
         penetration = torch.clamp(
             base_penetration + 0.002 * self.retry_count.to(torch.float32),
             max=0.012 if self.task == "cabinet_opening" else 0.010,
@@ -145,6 +158,13 @@ class ArticulatedOpeningExpert:
             pull[:, :2] -= 0.006 * front_normal
             pull[:, :2] += tangent_lead[:, None] * direction
 
+        if self.near_full_open_task:
+            reached_open = (self.state == self.PULL) & (task_state["joint_position"] >= 0.212)
+            self.hold_open_pose[reached_open] = ee_pose[reached_open]
+            self.command_pose[reached_open] = ee_pose[reached_open]
+            self.state[reached_open] = self.HOLD_OPEN
+            self.wait[reached_open] = 0
+
         desired_position = ee_pose[:, :3].clone()
         desired_position[self.state == self.APPROACH_ABOVE] = above[
             self.state == self.APPROACH_ABOVE
@@ -154,6 +174,9 @@ class ArticulatedOpeningExpert:
         ]
         desired_position[self.state == self.GRASP] = grasp[self.state == self.GRASP]
         desired_position[self.state == self.PULL] = pull[self.state == self.PULL]
+        holding_open = self.state == self.HOLD_OPEN
+        desired_position[holding_open] = self.hold_open_pose[holding_open, :3]
+        tool_quaternion[holding_open] = self.hold_open_pose[holding_open, 3:7]
 
         self.wait += 1
         transition = (self.state == self.REST) & duration_reached(
@@ -201,7 +224,7 @@ class ArticulatedOpeningExpert:
         self.state[transition] = self.PULL
         self.wait[transition] = 0
         lost_grasp = (
-            (self.state == self.PULL)
+            ((self.state == self.PULL) | (self.state == self.HOLD_OPEN))
             & duration_reached(self.wait, self.control_dt_s, 0.16)
             & ~valid_aperture
         )

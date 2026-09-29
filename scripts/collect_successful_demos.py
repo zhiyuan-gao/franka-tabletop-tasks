@@ -9,6 +9,21 @@ from pathlib import Path
 from isaaclab.app import AppLauncher
 
 
+DRAWER_SUBTASKS = (
+    "open_upper_drawer",
+    "open_lower_drawer",
+    "put_object_in_upper_drawer",
+    "put_object_in_lower_drawer",
+    "put_object_in_upper_drawer_and_close",
+    "put_object_in_lower_drawer_and_close",
+)
+DRAWER_OPEN_SUBTASKS = {"open_upper_drawer", "open_lower_drawer"}
+DRAWER_CLOSE_SUBTASKS = {
+    "put_object_in_upper_drawer_and_close",
+    "put_object_in_lower_drawer_and_close",
+}
+
+
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument(
     "--task",
@@ -19,6 +34,9 @@ parser.add_argument(
         "cabinet_opening",
         "object_to_drawer",
         "nut_pouring",
+        "cup_to_drawer",
+        "cup_to_cabinet_top",
+        *DRAWER_SUBTASKS,
     ),
     default="push_object_to_region",
 )
@@ -68,12 +86,17 @@ def main() -> dict:
     from track_b_envs.collection import EpisodeBuffer, SuccessfulDatasetWriter
     from track_b_envs.collection.experts import (
         CabinetOpeningExpert,
+        CupToCabinetTopExpert,
+        CupToDrawerExpert,
         DrawerOpeningExpert,
-        ObjectToDrawerExpert,
+        DrawerSubtaskExpert,
         NutPouringExpert,
+        ObjectToDrawerExpert,
         PushObjectToRegionExpert,
     )
     from track_b_envs.collection.experts.common import (
+        cup_cabinet_task_state,
+        drawer_subtask_state,
         object_to_drawer_task_state,
         nut_pouring_task_state,
         opening_task_state,
@@ -82,6 +105,18 @@ def main() -> dict:
     from track_b_envs.envs.articulated_opening import (
         CabinetOpeningEnvCfg,
         DrawerOpeningEnvCfg,
+    )
+    from track_b_envs.envs.cup_cabinet import (
+        CupToCabinetTopEnvCfg,
+        CupToDrawerEnvCfg,
+    )
+    from track_b_envs.envs.drawer_subtasks import (
+        OpenLowerDrawerEnvCfg,
+        OpenUpperDrawerEnvCfg,
+        PutObjectInLowerDrawerAndCloseEnvCfg,
+        PutObjectInLowerDrawerEnvCfg,
+        PutObjectInUpperDrawerAndCloseEnvCfg,
+        PutObjectInUpperDrawerEnvCfg,
     )
     from track_b_envs.envs.push_object_to_region import (
         PushCubeToRegionEnvCfg,
@@ -149,6 +184,69 @@ def main() -> dict:
                 "no articulation-state overwrite"
             ),
         }
+    elif args.task in DRAWER_SUBTASKS:
+        drawer_cfgs = {
+            "open_upper_drawer": OpenUpperDrawerEnvCfg,
+            "open_lower_drawer": OpenLowerDrawerEnvCfg,
+            "put_object_in_upper_drawer": PutObjectInUpperDrawerEnvCfg,
+            "put_object_in_lower_drawer": PutObjectInLowerDrawerEnvCfg,
+            "put_object_in_upper_drawer_and_close": PutObjectInUpperDrawerAndCloseEnvCfg,
+            "put_object_in_lower_drawer_and_close": PutObjectInLowerDrawerAndCloseEnvCfg,
+        }
+        cfg = drawer_cfgs[args.task]()
+        expert_cls = DrawerSubtaskExpert
+        state_fn = drawer_subtask_state
+        if cfg.task_mode == "open":
+            success_description = (
+                f"{cfg.drawer_level} drawer displacement >= 0.21 m"
+            )
+            expert_description = (
+                "closed-loop bilateral handle grasp and physical drawer pull"
+            )
+        elif cfg.task_mode == "put":
+            success_description = (
+                f"released banana settled inside the open {cfg.drawer_level} drawer"
+            )
+            expert_description = (
+                "physical banana grasp, transfer, gravity release, and settle verification"
+            )
+        else:
+            success_description = (
+                f"released banana inside the closed {cfg.drawer_level} drawer"
+            )
+            expert_description = (
+                "physical banana placement followed by a closed-finger front-panel push "
+                "and verified drawer closing motion"
+            )
+        task_metadata = {
+            "cabinet_root_position_m": list(cfg.scene.cabinet.init_state.pos),
+            "cabinet_yaw_wxyz": list(cfg.scene.cabinet.init_state.rot),
+            "drawer_level": cfg.drawer_level,
+            "active_joint": cfg.active_joint_name,
+            "task_mode": cfg.task_mode,
+            "trajectory_method": (
+                "velocity-limited Cartesian waypoint interpolation with "
+                "damped-least-squares differential IK and physical contact feedback"
+            ),
+            "transport_orientation": "fixed at pre-grasp; never follows the held object's rotation",
+            "initial_drawer_position_m": float(
+                cfg.scene.cabinet.init_state.joint_pos[cfg.active_joint_name]
+            ),
+            "object_asset": str(cfg.scene.object.spawn.usd_path),
+            "object_mass_kg": 0.066,
+            "reset_randomization": {
+                "cabinet_x_m": [-0.02, 0.02],
+                "cabinet_y_m": [-0.02, 0.02],
+                "cabinet_yaw_deg": [-5.0, 5.0],
+                "banana_local_x_m": [-0.02, 0.02],
+                "banana_local_y_m": [-0.02, 0.02],
+                "banana_local_yaw_deg": [-10.0, 10.0],
+            },
+            "physics_contract": (
+                "all object and drawer motion uses gripper contacts, gravity, "
+                "collision, and actuator effort; no state overwrite after reset"
+            ),
+        }
     elif args.task == "object_to_drawer":
         cfg = ObjectToDrawerEnvCfg()
         expert_cls = ObjectToDrawerExpert
@@ -188,7 +286,7 @@ def main() -> dict:
             ),
             "position_adjustment": None,
         }
-    else:
+    elif args.task == "nut_pouring":
         cfg = NutPouringEnvCfg()
         expert_cls = NutPouringExpert
         state_fn = nut_pouring_task_state
@@ -223,6 +321,42 @@ def main() -> dict:
             "physics_contract": (
                 "no root-pose writes after reset; cup grasped by contacts and nut "
                 "transferred by gravity/collision"
+            ),
+        }
+    else:
+        if args.task == "cup_to_drawer":
+            cfg = CupToDrawerEnvCfg()
+            expert_cls = CupToDrawerExpert
+            grasp_description = "top-down grasp"
+            target_description = "open upper drawer"
+        else:
+            cfg = CupToCabinetTopEnvCfg()
+            expert_cls = CupToCabinetTopExpert
+            grasp_description = "side grasp and lateral extraction"
+            target_description = "cabinet top"
+        state_fn = cup_cabinet_task_state
+        success_description = (
+            f"released upright cup on the {target_description}, with the upper "
+            f"drawer open, physically settled for {SETTLE_DURATION_S:.2f} s"
+        )
+        expert_description = (
+            f"closed-loop {grasp_description}, physical lift, transfer, "
+            "gravity release, and settle verification"
+        )
+        task_metadata = {
+            "cup_asset": str(cfg.scene.object.spawn.usd_path),
+            "cup_nominal_position_m": list(cfg.scene.object.init_state.pos),
+            "cabinet_root_position_m": list(cfg.scene.cabinet.init_state.pos),
+            "active_joint": "UpperDrawerJoint",
+            "initial_drawer_open_position_m": 0.22,
+            "grasp_strategy": grasp_description,
+            "target": target_description,
+            "settle_duration_s": SETTLE_DURATION_S,
+            "settle_steps": SETTLE_STEPS,
+            "reset_randomization": None,
+            "physics_contract": (
+                "no root-pose writes after reset; cup transport and placement "
+                "use gripper contacts, gravity, and collision"
             ),
         }
     cfg.scene.num_envs = args.num_envs
@@ -296,7 +430,7 @@ def main() -> dict:
                     }
                     for env_id in range(args.num_envs)
                 ]
-            elif args.task == "object_to_drawer":
+            elif args.task == "object_to_drawer" or args.task in DRAWER_SUBTASKS:
                 initial_states = [
                     {
                         "object_pose_base_wxyz": initial["object_pose"][env_id]
@@ -313,6 +447,19 @@ def main() -> dict:
                         .tolist(),
                         "drawer_joint_position": float(
                             initial["joint_position"][env_id].detach().cpu()
+                        ),
+                    }
+                    for env_id in range(args.num_envs)
+                ]
+            elif args.task in {"cup_to_drawer", "cup_to_cabinet_top"}:
+                initial_states = [
+                    {
+                        "cup_pose_base_wxyz": initial["cup_pose"][env_id]
+                        .detach().cpu().tolist(),
+                        "target_pose_base_wxyz": initial["target_pose"][env_id]
+                        .detach().cpu().tolist(),
+                        "drawer_joint_position": float(
+                            initial["drawer_joint_position"][env_id].detach().cpu()
                         ),
                     }
                     for env_id in range(args.num_envs)
@@ -355,17 +502,40 @@ def main() -> dict:
                         "joint_position": state_before["joint_position"],
                         "ee_handle_distance_m": distance_before,
                     }
-                elif args.task == "object_to_drawer":
-                    distance_before = torch.linalg.vector_norm(
-                        state_before["object_pose"][:, :3]
-                        - state_before["target_pose"][:, :3],
-                        dim=-1,
-                    )
+                elif args.task == "object_to_drawer" or args.task in DRAWER_SUBTASKS:
+                    if args.task in DRAWER_OPEN_SUBTASKS:
+                        distance_before = torch.linalg.vector_norm(
+                            state_before["ee_pose"][:, :3]
+                            - state_before["handle_pose"][:, :3],
+                            dim=-1,
+                        )
+                    else:
+                        distance_before = torch.linalg.vector_norm(
+                            state_before["object_pose"][:, :3]
+                            - state_before["target_pose"][:, :3],
+                            dim=-1,
+                        )
                     diagnostic_state = {
                         "object_position_m": state_before["object_pose"][:, :3],
                         "drawer_target_position_m": state_before["target_pose"][:, :3],
                         "object_target_distance_m": distance_before,
                         "drawer_joint_position": state_before["joint_position"],
+                        "finger_positions": state_before["finger_positions"],
+                        "ee_quaternion_wxyz": state_before["ee_pose"][:, 3:7],
+                    }
+                elif args.task in {"cup_to_drawer", "cup_to_cabinet_top"}:
+                    distance_before = torch.linalg.vector_norm(
+                        state_before["cup_pose"][:, :3]
+                        - state_before["target_pose"][:, :3],
+                        dim=-1,
+                    )
+                    diagnostic_state = {
+                        "cup_position_m": state_before["cup_pose"][:, :3],
+                        "target_position_m": state_before["target_pose"][:, :3],
+                        "cup_target_distance_m": distance_before,
+                        "drawer_joint_position": state_before[
+                            "drawer_joint_position"
+                        ],
                         "finger_positions": state_before["finger_positions"],
                     }
                 else:
@@ -444,13 +614,17 @@ def main() -> dict:
                         "drawer_opening",
                         "cabinet_opening",
                         "object_to_drawer",
-                    }
+                    } or args.task in DRAWER_OPEN_SUBTASKS
                     handle_grasp_verified = (
                         bool(expert.grasp_verified[env_id].detach().cpu())
                         if handle_grasp_required
                         else True
                     )
-                    succeeded = bool(success[env_id]) and handle_grasp_verified
+                    closing_contact_verified = (
+                        bool(expert.closing_contact_verified[env_id].detach().cpu())
+                        if args.task in DRAWER_CLOSE_SUBTASKS else True
+                    )
+                    succeeded = bool(success[env_id]) and handle_grasp_verified and closing_contact_verified
                     active_terms = {
                         name: bool(value[0])
                         for name, value in env.termination_manager.get_active_iterable_terms(
@@ -461,6 +635,8 @@ def main() -> dict:
                         reason = "success"
                     elif bool(success[env_id]) and not handle_grasp_verified:
                         reason = "unverified_handle_grasp"
+                    elif bool(success[env_id]) and not closing_contact_verified:
+                        reason = "unverified_closing_contact"
                     else:
                         reason = next(
                             (name for name, value in active_terms.items() if value),
@@ -477,7 +653,10 @@ def main() -> dict:
                                 minimum_pre_step_distance[env_id].detach().cpu()
                             ),
                             "termination_terms": active_terms,
+                            "handle_grasp_required": handle_grasp_required,
                             "handle_grasp_verified": handle_grasp_verified,
+                            "closing_contact_required": args.task in DRAWER_CLOSE_SUBTASKS,
+                            "closing_contact_verified": closing_contact_verified,
                         },
                     )
                     if succeeded and writer.successful_episodes < args.num_episodes:
@@ -562,5 +741,10 @@ def main() -> dict:
 if __name__ == "__main__":
     try:
         main()
+    except Exception:
+        import traceback
+
+        traceback.print_exc()
+        raise
     finally:
         simulation_app.close()

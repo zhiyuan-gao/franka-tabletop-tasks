@@ -1,0 +1,306 @@
+#usda 1.0
+(
+    defaultPrim = "SingleDoorWhiteCabinet"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "SingleDoorWhiteCabinet" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI"]
+    kind = "component"
+)
+{
+    custom double cabinet:depth = 0.34
+    custom string cabinet:designFamily = "ML-Design ML-093 approximation"
+    custom double cabinet:doorHeight = 0.264
+    custom double cabinet:doorWidth = 0.345
+    custom string cabinet:frontAxis = "+Y"
+    custom double cabinet:handleWidth = 0.11
+    custom double cabinet:height = 0.37
+    custom string cabinet:hingeSide = "left"
+    custom double cabinet:width = 0.38
+
+    def Scope "Looks"
+    {
+        def Material "WhiteMelamine"
+        {
+            token outputs:surface.connect = </SingleDoorWhiteCabinet/Looks/WhiteMelamine/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.94, 0.94, 0.94)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.38
+                token outputs:surface
+            }
+        }
+
+        def Material "Aluminum"
+        {
+            token outputs:surface.connect = </SingleDoorWhiteCabinet/Looks/Aluminum/PreviewSurface.outputs:surface>
+
+            def Shader "PreviewSurface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.62, 0.64, 0.66)
+                float inputs:metallic = 0.82
+                float inputs:roughness = 0.24
+                token outputs:surface
+            }
+        }
+    }
+
+    def Scope "PhysicsMaterials"
+    {
+        def Material "CabinetSurface" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.38
+            float physics:restitution = 0.02
+            float physics:staticFriction = 0.45
+        }
+
+        def Material "HandleSurface" (
+            prepend apiSchemas = ["PhysicsMaterialAPI"]
+        )
+        {
+            float physics:dynamicFriction = 0.6
+            float physics:restitution = 0
+            float physics:staticFriction = 0.8
+        }
+    }
+
+    def Xform "CabinetBody" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 7.8
+        bool physics:rigidBodyEnabled = 1
+
+        def Cube "LeftPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.015, 0.34, 0.349)
+            double3 xformOp:translate = (-0.1825, 0, 0.1805)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "RightPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.015, 0.34, 0.349)
+            double3 xformOp:translate = (0.1825, 0, 0.1805)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "TopPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.38, 0.34, 0.015)
+            double3 xformOp:translate = (0, 0, 0.3625)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BottomShelf" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.328, 0.015)
+            double3 xformOp:translate = (0, -0.006, 0.0795)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "MiddleShelf" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.32, 0.012)
+            double3 xformOp:translate = (0, -0.01, 0.218)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "BackPanel" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.012, 0.349)
+            double3 xformOp:translate = (0, -0.164, 0.1805)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FrontPlinth" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.35, 0.015, 0.073)
+            double3 xformOp:translate = (0, 0.1625, 0.042499999999999996)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootFrontLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (-0.17200000000000001, 0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootFrontRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (0.17200000000000001, 0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootBackLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (-0.17200000000000001, -0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "FootBackRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.012, 0.006)
+            double3 xformOp:translate = (0.17200000000000001, -0.15200000000000002, 0.003)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def PhysicsFixedJoint "FixedBaseJoint"
+    {
+        rel physics:body1 = </SingleDoorWhiteCabinet/CabinetBody>
+    }
+
+    def Xform "Door" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 1.2
+        bool physics:rigidBodyEnabled = 1
+        double3 xformOp:translate = (-0.1725, 0.1625, 0.217)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "Front" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/WhiteMelamine>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/CabinetSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.345, 0.015, 0.264)
+            double3 xformOp:translate = (0.1725, 0, 0)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleBar" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/HandleSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.11, 0.011, 0.011)
+            double3 xformOp:translate = (0.26999999999999996, 0.0275, 0.045)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleSupportLeft" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/HandleSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.026, 0.016)
+            double3 xformOp:translate = (0.22399999999999998, 0.0145, 0.045)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "HandleSupportRight" (
+            prepend apiSchemas = ["MaterialBindingAPI", "PhysicsCollisionAPI"]
+        )
+        {
+            rel material:binding = </SingleDoorWhiteCabinet/Looks/Aluminum>
+            rel material:binding:physics = </SingleDoorWhiteCabinet/PhysicsMaterials/HandleSurface>
+            bool physics:collisionEnabled = 1
+            double size = 1
+            float3 xformOp:scale = (0.012, 0.026, 0.016)
+            double3 xformOp:translate = (0.31599999999999995, 0.0145, 0.045)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def PhysicsRevoluteJoint "DoorHingeJoint"
+    {
+        uniform token physics:axis = "Z"
+        rel physics:body0 = </SingleDoorWhiteCabinet/CabinetBody>
+        rel physics:body1 = </SingleDoorWhiteCabinet/Door>
+        bool physics:collisionEnabled = 0
+        point3f physics:localPos0 = (-0.1725, 0.1625, 0.217)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = 0
+        float physics:upperLimit = 100
+    }
+}

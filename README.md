@@ -199,6 +199,8 @@ python scripts/collect_successful_demos.py \
 
 Supported task names are `push_object_to_region`, `push_cube_to_region`,
 `drawer_opening`, `cabinet_opening`, `object_to_drawer`, and `nut_pouring`.
+The calibrated cabinet also supports the six upper/lower
+[drawer subtasks](docs/drawer_subtasks.md): open, put, and put-and-close.
 
 ## Documentation and data
 

@@ -56,6 +56,27 @@ class RealBackgroundCompositor:
             batch_size, IMAGE_HEIGHT, IMAGE_WIDTH, 2
         )
 
+    def warp_rgb(self, rgb: torch.Tensor, render_intrinsic: torch.Tensor) -> torch.Tensor:
+        """Warp simulator RGB to the calibrated camera intrinsics without compositing."""
+
+        if rgb.ndim != 4 or rgb.shape[1:3] != (IMAGE_HEIGHT, IMAGE_WIDTH):
+            raise ValueError(f"expected BHWC RGB at 1280x720, got {tuple(rgb.shape)}")
+        rgb = rgb[..., :3].to(self.device)
+        grid = self._warp_grid(render_intrinsic, rgb.shape[0])
+        return (
+            functional.grid_sample(
+                rgb.permute(0, 3, 1, 2).float(),
+                grid,
+                mode="bilinear",
+                padding_mode="border",
+                align_corners=True,
+            )
+            .permute(0, 2, 3, 1)
+            .round()
+            .clamp(0, 255)
+            .to(torch.uint8)
+        )
+
     def compose(self, rgb: torch.Tensor, semantic: torch.Tensor, render_intrinsic: torch.Tensor) -> torch.Tensor:
         """Return BHWC uint8 composite images at calibrated resolution."""
 
@@ -67,15 +88,13 @@ class RealBackgroundCompositor:
         if semantic.shape != rgb.shape[:3]:
             raise ValueError(f"unexpected semantic shape: {tuple(semantic.shape)}")
         grid = self._warp_grid(render_intrinsic, rgb.shape[0])
-        warped_rgb = functional.grid_sample(
-            rgb.permute(0, 3, 1, 2).float(), grid, mode="bilinear", padding_mode="zeros", align_corners=True
-        ).permute(0, 2, 3, 1)
+        warped_rgb = self.warp_rgb(rgb, render_intrinsic)
         warped_mask = functional.grid_sample(
             (semantic != 0)[:, None].float(), grid, mode="nearest", padding_mode="zeros", align_corners=True
         )[:, 0] > 0.5
         background = self.background.unsqueeze(0).expand(rgb.shape[0], -1, -1, -1)
         return torch.where(
-            warped_mask[..., None], warped_rgb.round().clamp(0, 255).to(torch.uint8), background
+            warped_mask[..., None], warped_rgb, background
         )
 
     @staticmethod

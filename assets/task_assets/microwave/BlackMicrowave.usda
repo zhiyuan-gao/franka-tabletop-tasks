@@ -1,0 +1,646 @@
+#usda 1.0
+(
+    defaultPrim = "Microwave"
+    metersPerUnit = 1
+    upAxis = "Z"
+)
+
+def Xform "Microwave" (
+    prepend apiSchemas = ["PhysicsArticulationRootAPI"]
+)
+{
+    def PhysicsFixedJoint "FixedBaseJoint"
+    {
+        rel physics:body1 = </Microwave/Body>
+    }
+
+    def Xform "Body" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 8
+
+        def Cube "microwave_top" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_top>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.38, 0.285, 0.027)
+            double3 xformOp:translate = (0, 0, 0.2065)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_bottom" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_bottom>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.38, 0.285, 0.027)
+            double3 xformOp:translate = (0, 0, 0.0135)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_far_side" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_far_side>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.025, 0.285, 0.166)
+            double3 xformOp:translate = (0.1775, 0, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_side_label" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_side_label>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.004, 0.135, 0.07)
+            double3 xformOp:translate = (0.1925, -0.025, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_rear" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_rear>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.33, 0.025, 0.166)
+            double3 xformOp:translate = (0, -0.12999999999999998, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_control_body" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_control_body>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.085, 0.235, 0.166)
+            double3 xformOp:translate = (-0.1475, 0, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_control_column" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_control_column>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.085, 0.03, 0.19)
+            double3 xformOp:translate = (-0.1475, 0.13349999999999998, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_display" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_display>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.056, 0.006, 0.036)
+            double3 xformOp:translate = (-0.1475, 0.1515, 0.168)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_button_0" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_button_0>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.048, 0.006, 0.018)
+            double3 xformOp:translate = (-0.1475, 0.1525, 0.155)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_button_1" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_button_1>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.048, 0.006, 0.018)
+            double3 xformOp:translate = (-0.1475, 0.1525, 0.12)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_button_2" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_button_2>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.048, 0.006, 0.018)
+            double3 xformOp:translate = (-0.1475, 0.1525, 0.085)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_button_3" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_button_3>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.048, 0.006, 0.018)
+            double3 xformOp:translate = (-0.1475, 0.1525, 0.05)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_front_lower_bezel" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_front_lower_bezel>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.27, 0.022, 0.025)
+            double3 xformOp:translate = (0.030000000000000006, 0.14049999999999999, 0.031)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_front_upper_bezel" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_front_upper_bezel>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.27, 0.022, 0.025)
+            double3 xformOp:translate = (0.030000000000000006, 0.14049999999999999, 0.189)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_cavity_floor" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_cavity_floor>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.25, 0.23, 0.012)
+            double3 xformOp:translate = (0.030000000000000006, -0.004, 0.041)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Xform "Door" (
+        prepend apiSchemas = ["PhysicsRigidBodyAPI", "PhysicsMassAPI"]
+    )
+    {
+        float physics:mass = 0.45
+        double3 xformOp:translate = (0.17, 0.1585, 0)
+        uniform token[] xformOpOrder = ["xformOp:translate"]
+
+        def Cube "microwave_door_glass" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_door_glass>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.216, 0.028, 0.132)
+            double3 xformOp:translate = (-0.14099999999999996, 3.469446951953614e-18, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_door_hinge_rail" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_door_hinge_rail>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.033, 0.034, 0.198)
+            double3 xformOp:translate = (-0.016499999999999976, 9.107298248878237e-18, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_door_outer_rail" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_door_outer_rail>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.033, 0.034, 0.198)
+            double3 xformOp:translate = (-0.2654999999999999, -6.938893903907228e-18, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_door_lower_rail" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_door_lower_rail>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.216, 0.034, 0.033)
+            double3 xformOp:translate = (-0.14099999999999996, 3.469446951953614e-18, 0.0275)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_door_upper_rail" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_door_upper_rail>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.216, 0.034, 0.033)
+            double3 xformOp:translate = (-0.14099999999999996, 3.469446951953614e-18, 0.1925)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+
+        def Cube "microwave_door_handle" (
+            prepend apiSchemas = ["PhysicsCollisionAPI", "PhysxCollisionAPI", "MaterialBindingAPI"]
+        )
+        {
+            rel material:binding = </Microwave/Looks/microwave_door_handle>
+            rel material:binding:physics = </Microwave/PhysicsMaterial>
+            float physxCollision:contactOffset = 0.002
+            float physxCollision:restOffset = 0
+            double size = 1
+            float3 xformOp:scale = (0.024, 0.032, 0.133)
+            double3 xformOp:translate = (-0.237, 0.02800000000000001, 0.11)
+            uniform token[] xformOpOrder = ["xformOp:translate", "xformOp:scale"]
+        }
+    }
+
+    def Material "PhysicsMaterial" (
+        prepend apiSchemas = ["PhysicsMaterialAPI"]
+    )
+    {
+        float physics:dynamicFriction = 0.5
+        float physics:restitution = 0
+        float physics:staticFriction = 0.65
+    }
+
+    def "Looks"
+    {
+        def Material "microwave_top"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_top/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.001, 0.001, 0.001)
+                float inputs:metallic = 0
+                float inputs:roughness = 1
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_bottom"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_bottom/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.92
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_far_side"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_far_side/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.006, 0.007, 0.007)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.92
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_side_label"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_side_label/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.72, 0.72, 0.68)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_rear"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_rear/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.004, 0.004, 0.004)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.92
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_control_body"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_control_body/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.006, 0.007, 0.007)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.96
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_control_column"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_control_column/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.035, 0.04, 0.039)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_display"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_display/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.1, 0.16, 0.145)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.82
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_button_0"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_button_0/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.26, 0.28, 0.27)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_button_1"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_button_1/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.26, 0.28, 0.27)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_button_2"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_button_2/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.26, 0.28, 0.27)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_button_3"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_button_3/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.26, 0.28, 0.27)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_front_lower_bezel"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_front_lower_bezel/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.92
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_front_upper_bezel"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_front_upper_bezel/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.92
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_cavity_floor"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_cavity_floor/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.075, 0.078, 0.07)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_door_glass"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_door_glass/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.025, 0.033, 0.032)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_door_hinge_rail"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_door_hinge_rail/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_door_outer_rail"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_door_outer_rail/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_door_lower_rail"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_door_lower_rail/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_door_upper_rail"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_door_upper_rail/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.002, 0.002, 0.002)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+
+        def Material "microwave_door_handle"
+        {
+            token outputs:surface.connect = </Microwave/Looks/microwave_door_handle/Surface.outputs:surface>
+
+            def Shader "Surface"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor = (0.025, 0.027, 0.027)
+                float inputs:metallic = 0
+                float inputs:roughness = 0.95
+                token outputs:surface
+            }
+        }
+    }
+
+    def PhysicsRevoluteJoint "DoorHingeJoint"
+    {
+        uniform token physics:axis = "Z"
+        rel physics:body0 = </Microwave/Body>
+        rel physics:body1 = </Microwave/Door>
+        bool physics:collisionEnabled = 0
+        point3f physics:localPos0 = (0.17, 0.1585, 0)
+        point3f physics:localPos1 = (0, 0, 0)
+        quatf physics:localRot0 = (1, 0, 0, 0)
+        quatf physics:localRot1 = (1, 0, 0, 0)
+        float physics:lowerLimit = -100
+        float physics:upperLimit = 0
+    }
+}

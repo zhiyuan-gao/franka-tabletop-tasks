@@ -1,0 +1,41 @@
+seed: 20260827
+
+environment:
+  num_envs: 4
+
+model:
+  image_feature_dim: 256
+  proprio_feature_dim: 64
+  actor_hidden_dims: [256, 128]
+  critic_hidden_dims: [256, 256, 128]
+  initial_log_std: -1.5
+
+agent:
+  rollouts: 16
+  learning_epochs: 4
+  mini_batches: 4
+  discount_factor: 0.99
+  gae_lambda: 0.95
+  learning_rate: 0.0003
+  random_timesteps: 0
+  learning_starts: 0
+  grad_norm_clip: 0.5
+  ratio_clip: 0.2
+  value_clip: 0.2
+  entropy_loss_scale: 0.001
+  value_loss_scale: 1.0
+  kl_threshold: 0.02
+  time_limit_bootstrap: true
+  mixed_precision: false
+
+experiment:
+  write_interval: 500
+  checkpoint_interval: 10000
+  store_separately: false
+  wandb: false
+
+trainer:
+  timesteps: 1000000
+  disable_progressbar: false
+  close_environment_at_exit: false
+  environment_info: episode

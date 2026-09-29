@@ -1,4 +1,4 @@
-"""Shared initial-state geometry for the four remaining Track B tasks."""
+"""Shared initial-state geometry for the calibrated Track B tasks."""
 
 from __future__ import annotations
 
@@ -13,6 +13,8 @@ SUPPORTED_TASKS = (
     "cabinet_opening",
     "object_to_drawer",
     "nut_pouring",
+    "cup_to_drawer",
+    "cup_to_cabinet_top",
 )
 
 TASK_ASSET_ROOT = PROJECT_ROOT / "assets" / "task_assets"
@@ -29,6 +31,24 @@ YCB_BANANA_TEXTURE = TASK_ASSET_ROOT / "ycb" / "Materials" / "Textures" / "011_b
 CABINET_POSITION_M = (0.72, -0.18, 0.0)
 DOOR_CABINET_POSITION_M = (0.75, -0.18, 0.0)
 CABINET_ROTATION_WXYZ = (0.9537169507482269, 0.0, 0.0, 0.3007057995042731)
+# Pose recovered from the four top-panel corners in the first unobstructed
+# frame of ``banana_in_drawer_then_close_episode_000048.mp4``.  Fifteen board
+# markers were used to recover the per-video camera pose before intersecting
+# the corner rays with the z=0.37 m cabinet-top plane.  The reconstructed
+# 0.373/0.387 m width and 0.340/0.341 m depth agree with this asset's
+# 0.38 x 0.34 m footprint; the rigid rectangle-fit corner residual is 3-4 mm.
+OBJECT_TO_DRAWER_CABINET_POSITION_M = (0.60386895, -0.52161895, 0.0)
+OBJECT_TO_DRAWER_CABINET_YAW_DEG = 8.74888170
+OBJECT_TO_DRAWER_CABINET_ROTATION_WXYZ = (
+    0.9970868767,
+    0.0,
+    0.0,
+    0.0762742440,
+)
+# The Figure-4 cup tasks preserve the same cabinet yaw and all cabinet-local
+# cup coordinates, but translate the complete setup 8 cm toward the Franka so
+# the requested centered top grasp stays inside the physical workspace.
+CUP_CABINET_POSITION_M = (0.5382724247, -0.4758248907, 0.0)
 DRAWER_HANDLE_OFFSET_M = (0.0, 0.19, -0.004)
 # Desired banana-root pose near the center of the usable upper-drawer volume.
 # The drawer floor top is z=-0.048 m in UpperDrawer coordinates and the
@@ -50,15 +70,16 @@ BANANA_ROOT_HEIGHT_M = (
     - BANANA_SCALE * BANANA_STABLE_LOCAL_MIN_Z_M
     + BANANA_SUPPORT_CLEARANCE_M
 )
-BANANA_POSITION_M = (0.662642356, -0.098084796, BANANA_ROOT_HEIGHT_M)
-# Convex-hull stable pose (second broad side), followed by the cabinet's
-# 35-degree world yaw. This genuinely lays the curved banana on its broad side;
-# the previous quaternion was almost only a Z yaw and left it edge-on.
+BANANA_POSITION_M = (0.588658540, -0.422782502, BANANA_ROOT_HEIGHT_M)
+# Convex-hull stable pose (second broad side), followed by the calibrated
+# object-to-drawer cabinet yaw. This genuinely lays the curved banana on its
+# broad side; the previous quaternion was almost only a Z yaw and left it
+# edge-on.
 BANANA_STABLE_ROTATION_WXYZ = (
-    0.6263745652,
-    -0.7180267277,
-    -0.2399292821,
-    0.1858129755,
+    0.6522058600,
+    -0.7537526300,
+    -0.0706074200,
+    0.0387178200,
 )
 # Place the cup almost directly below the side-grasp pre-approach generated
 # from the Franka home pose.  Compared with (0.38, -0.28), this reduces the
@@ -66,6 +87,26 @@ BANANA_STABLE_ROTATION_WXYZ = (
 POURING_CUP_POSITION_M = (0.43, -0.18, 0.001)
 POURING_NUT_HEIGHT_M = 0.050
 POURING_BOWL_POSITION_M = (0.52, -0.04, 0.001)
+
+# Cup/cabinet tasks reuse the cabinet pose calibrated from the banana drawer
+# video.  Coordinates below are expressed in the cabinet frame first, then
+# projected into world XY.  The cup USD origin is at the base of the cup.
+# The local XY measurements reproduce the object placement in KnowDemo-Fig4:
+# the first cup is close to the drawer-side edge of the cabinet top, while the
+# second is centered laterally below the extended upper-drawer front.
+CUP_HEIGHT_M = 0.087
+CUP_TO_DRAWER_LOCAL_POSITION_M = (0.035, 0.080, CABINET_TOP_HEIGHT_M + 0.001)
+CUP_TO_DRAWER_POSITION_M = (0.5606968538, -0.3914320891, 0.371)
+# The cup is centered laterally below the open upper-drawer front, as in the
+# Figure-4 demonstration.  A staged high-to-low approach keeps this literal
+# image placement reachable without crossing the drawer.
+CUP_TO_CABINET_TOP_LOCAL_POSITION_M = (0.035, 0.364, 0.001)
+CUP_TO_CABINET_TOP_POSITION_M = (0.5174992907, -0.1107365769, 0.001)
+UPPER_DRAWER_OPEN_POSITION_M = 0.220
+# UpperDrawer origin is at z=0.284 m.  Its floor top is at local z=-0.048 m;
+# the extra millimetre keeps the cup base out of the collision surface.
+UPPER_DRAWER_CUP_TARGET_OFFSET_M = (0.035, 0.085, -0.047)
+CABINET_TOP_CUP_TARGET_OFFSET_M = CUP_TO_DRAWER_LOCAL_POSITION_M
 
 
 def validate_task_assets() -> None:
@@ -82,7 +123,7 @@ def validate_task_assets() -> None:
             raise FileNotFoundError(path)
 
 
-def _cabinet_cfg(kind: str):
+def _cabinet_cfg(kind: str, *, upper_drawer_open: bool = False):
     import isaaclab.sim as sim_utils
     from isaaclab.actuators import ImplicitActuatorCfg
     from isaaclab.assets import ArticulationCfg
@@ -90,7 +131,14 @@ def _cabinet_cfg(kind: str):
     if kind == "drawer":
         usd_path = DRAWER_CABINET_USD
         joint_names = [".*DrawerJoint"]
-        joint_pos = {".*DrawerJoint": 0.0}
+        joint_pos = (
+            {
+                "LowerDrawerJoint": 0.0,
+                "UpperDrawerJoint": UPPER_DRAWER_OPEN_POSITION_M,
+            }
+            if upper_drawer_open
+            else {".*DrawerJoint": 0.0}
+        )
         actuator_name = "drawers"
         # Empirical nominal rail resistance.  The values were selected from an
         # effort sweep so that a light incidental collision cannot open the
@@ -151,12 +199,16 @@ def build_drawer_cabinet_cfg():
     return _cabinet_cfg("drawer")
 
 
-def _cabinet_handle_frame_cfg(kind: str):
+def build_cabinet_handle_frame_cfg(
+    kind: str, *, drawer_body: str = "UpperDrawer"
+):
     from isaaclab.sensors import FrameTransformerCfg
     from isaaclab.sensors.frame_transformer.frame_transformer_cfg import OffsetCfg
 
     if kind == "drawer":
-        body_prim = "UpperDrawer"
+        if drawer_body not in {"UpperDrawer", "LowerDrawer"}:
+            raise ValueError(f"unsupported drawer body: {drawer_body}")
+        body_prim = drawer_body
         offset = DRAWER_HANDLE_OFFSET_M
     elif kind == "door":
         body_prim = "Door"
@@ -176,20 +228,49 @@ def _cabinet_handle_frame_cfg(kind: str):
     )
 
 
-def _drawer_interior_frame_cfg():
+def build_drawer_interior_frame_cfg(*, drawer_body: str = "UpperDrawer"):
     """Track a conservative placement target in the moving upper drawer."""
 
     from isaaclab.sensors import FrameTransformerCfg
     from isaaclab.sensors.frame_transformer.frame_transformer_cfg import OffsetCfg
 
+    if drawer_body not in {"UpperDrawer", "LowerDrawer"}:
+        raise ValueError(f"unsupported drawer body: {drawer_body}")
     return FrameTransformerCfg(
         prim_path="{ENV_REGEX_NS}/Robot/panda_link0",
         debug_vis=False,
         target_frames=[
             FrameTransformerCfg.FrameCfg(
-                prim_path="{ENV_REGEX_NS}/Cabinet/UpperDrawer",
+                prim_path=f"{{ENV_REGEX_NS}}/Cabinet/{drawer_body}",
                 name="drawer_interior",
                 offset=OffsetCfg(pos=DRAWER_INTERIOR_TARGET_OFFSET_M),
+            )
+        ],
+    )
+
+
+def _cup_target_frame_cfg(task: str):
+    """Track the cup-base target for either open-drawer placement task."""
+
+    from isaaclab.sensors import FrameTransformerCfg
+    from isaaclab.sensors.frame_transformer.frame_transformer_cfg import OffsetCfg
+
+    if task == "cup_to_drawer":
+        body_prim = "UpperDrawer"
+        offset = UPPER_DRAWER_CUP_TARGET_OFFSET_M
+    elif task == "cup_to_cabinet_top":
+        body_prim = "CabinetBody"
+        offset = CABINET_TOP_CUP_TARGET_OFFSET_M
+    else:
+        raise ValueError(f"unsupported cup target task: {task}")
+    return FrameTransformerCfg(
+        prim_path="{ENV_REGEX_NS}/Robot/panda_link0",
+        debug_vis=False,
+        target_frames=[
+            FrameTransformerCfg.FrameCfg(
+                prim_path=f"{{ENV_REGEX_NS}}/Cabinet/{body_prim}",
+                name="cup_target",
+                offset=OffsetCfg(pos=offset),
             )
         ],
     )
@@ -292,20 +373,71 @@ def _pouring_cfgs():
     return cup, nut, bowl
 
 
+def _cup_cfg(position):
+    """Return the physical blue cup without the nut used by NutPouring."""
+
+    import isaaclab.sim as sim_utils
+    from isaaclab.assets import RigidObjectCfg
+    from isaaclab.sim.spawners.from_files.from_files_cfg import UsdFileCfg
+
+    return RigidObjectCfg(
+        prim_path="{ENV_REGEX_NS}/BluePouringCup",
+        spawn=UsdFileCfg(
+            usd_path=str(POURING_CUP_USD),
+            semantic_tags=[FOREGROUND_SEMANTIC_TAG],
+            rigid_props=sim_utils.RigidBodyPropertiesCfg(
+                max_depenetration_velocity=3.0,
+                solver_position_iteration_count=16,
+                solver_velocity_iteration_count=4,
+            ),
+            collision_props=sim_utils.CollisionPropertiesCfg(
+                contact_offset=0.002,
+                rest_offset=0.0,
+            ),
+        ),
+        init_state=RigidObjectCfg.InitialStateCfg(pos=position),
+    )
+
+
 def apply_task_assets_to_scene(scene, task: str) -> None:
     """Add one task's project-local assets to an existing Franka scene config."""
     if task not in SUPPORTED_TASKS:
         raise ValueError(f"unsupported task {task!r}; choose one of {SUPPORTED_TASKS}")
     validate_task_assets()
-    if task in {"drawer_opening", "object_to_drawer"}:
-        scene.cabinet = _cabinet_cfg("drawer")
-        scene.cabinet_frame = _cabinet_handle_frame_cfg("drawer")
+    if task in {
+        "drawer_opening",
+        "object_to_drawer",
+        "cup_to_drawer",
+        "cup_to_cabinet_top",
+    }:
+        scene.cabinet = _cabinet_cfg(
+            "drawer",
+            upper_drawer_open=task in {"cup_to_drawer", "cup_to_cabinet_top"},
+        )
+        if task == "object_to_drawer":
+            scene.cabinet.init_state.pos = OBJECT_TO_DRAWER_CABINET_POSITION_M
+            scene.cabinet.init_state.rot = OBJECT_TO_DRAWER_CABINET_ROTATION_WXYZ
+        elif task in {"cup_to_drawer", "cup_to_cabinet_top"}:
+            scene.cabinet.init_state.pos = CUP_CABINET_POSITION_M
+            scene.cabinet.init_state.rot = OBJECT_TO_DRAWER_CABINET_ROTATION_WXYZ
+        scene.cabinet_frame = build_cabinet_handle_frame_cfg("drawer")
         scene.object = None if task == "drawer_opening" else _banana_cfg()
         if task == "object_to_drawer":
-            scene.drawer_interior_frame = _drawer_interior_frame_cfg()
+            scene.drawer_interior_frame = build_drawer_interior_frame_cfg()
+        elif task in {"cup_to_drawer", "cup_to_cabinet_top"}:
+            # The task begins with the drawer already open.  A position drive
+            # keeps it at the demonstrated state without per-step state writes.
+            scene.cabinet.actuators["drawers"].stiffness = 2000.0
+            scene.cabinet.actuators["drawers"].damping = 80.0
+            scene.object = _cup_cfg(
+                CUP_TO_DRAWER_POSITION_M
+                if task == "cup_to_drawer"
+                else CUP_TO_CABINET_TOP_POSITION_M
+            )
+            scene.cup_target_frame = _cup_target_frame_cfg(task)
     elif task == "cabinet_opening":
         scene.cabinet = _cabinet_cfg("door")
-        scene.cabinet_frame = _cabinet_handle_frame_cfg("door")
+        scene.cabinet_frame = build_cabinet_handle_frame_cfg("door")
         scene.object = None
     else:
         scene.object, scene.factory_nut, scene.sorting_bowl = _pouring_cfgs()
@@ -338,13 +470,27 @@ __all__ = [
     "CABINET_POSITION_M",
     "DOOR_CABINET_POSITION_M",
     "CABINET_ROTATION_WXYZ",
+    "CABINET_TOP_CUP_TARGET_OFFSET_M",
+    "CUP_CABINET_POSITION_M",
+    "CUP_HEIGHT_M",
+    "CUP_TO_CABINET_TOP_LOCAL_POSITION_M",
+    "CUP_TO_CABINET_TOP_POSITION_M",
+    "CUP_TO_DRAWER_LOCAL_POSITION_M",
+    "CUP_TO_DRAWER_POSITION_M",
+    "OBJECT_TO_DRAWER_CABINET_POSITION_M",
+    "OBJECT_TO_DRAWER_CABINET_ROTATION_WXYZ",
+    "OBJECT_TO_DRAWER_CABINET_YAW_DEG",
     "DRAWER_INTERIOR_TARGET_OFFSET_M",
+    "UPPER_DRAWER_CUP_TARGET_OFFSET_M",
+    "UPPER_DRAWER_OPEN_POSITION_M",
     "POURING_BOWL_POSITION_M",
     "POURING_CUP_POSITION_M",
     "POURING_NUT_HEIGHT_M",
     "SUPPORTED_TASKS",
     "apply_task_assets_to_scene",
+    "build_cabinet_handle_frame_cfg",
     "build_drawer_cabinet_cfg",
+    "build_drawer_interior_frame_cfg",
     "build_initial_state_scene_cfg",
     "validate_task_assets",
 ]
