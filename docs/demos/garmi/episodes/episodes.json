@@ -1,0 +1,457 @@
+[
+  {
+    "case": {
+      "id": "01-center",
+      "bowl": [
+        0.2,
+        7.4
+      ],
+      "navigation_start": [
+        0.0,
+        5.8,
+        1.5707963267948966
+      ],
+      "rl_start": [
+        0.25,
+        6.35,
+        1.5707963267948966
+      ],
+      "reference": "bowl-r020",
+      "camera_offset": [
+        -0.55,
+        0.28,
+        0.85
+      ]
+    },
+    "status": "completed",
+    "started_at": 1792436822.6178474,
+    "grasp_succeeded": true,
+    "placement": {
+      "event": "transport_result",
+      "time": 1792436956.919526,
+      "passed": true,
+      "carry_mode": "physical",
+      "automatic_attachment": false,
+      "object_position": [
+        1.601015853881836,
+        5.314366674423217,
+        0.7924760580062866
+      ],
+      "horizontal_error_m": 0.005724325416991725,
+      "released": true,
+      "supported": true,
+      "no_finger_contact": true,
+      "stationary": true,
+      "height_ok": true,
+      "target": [
+        1.6,
+        5.32,
+        0.8
+      ],
+      "verification_seconds": 2.0
+    },
+    "navigation_arrival": {
+      "event": "navigation_arrival",
+      "time": 1792436880.8978782,
+      "requested": [
+        0.25,
+        6.35,
+        1.5707963267948966
+      ],
+      "actual": [
+        0.25060277730226516,
+        6.323269209265709,
+        0.02590009570121765
+      ],
+      "yaw": 1.5709331618586322,
+      "point_error_m": 0.026737586161742197,
+      "acceptance": "RL admission checks the actual trained region, posture and rest state"
+    },
+    "error": null,
+    "finished_at": 1792436973.3204267,
+    "elapsed_seconds": 150.70257949829102,
+    "source_run": "results/cram-rl-multiepisode/20261019-left-counter/01-center",
+    "fps": 10,
+    "source_frames": 943,
+    "clip_start_frame": 272,
+    "clip_end_frame": 364,
+    "grasp_seconds": 9.2,
+    "rl_started": true,
+    "rl_approach_seconds": 2.9,
+    "fixed_finish_seconds": 6.3,
+    "measured_rl_start": [
+      0.24943724572658538,
+      6.324933926016092,
+      0.025900065898895264
+    ],
+    "measured_bowl": [
+      0.20000022202730178,
+      7.399999833106994,
+      0.977470874786377
+    ],
+    "video_sha256": "3f8ecb66494d5e40ac11e93d591bb2b0a9e3b7d3fcd1cb48f1546dda2e4b9ee1",
+    "full_video": "01-center-full.mp4",
+    "grasp_video": "01-center-grasp.mp4",
+    "quick_video": "01-center-quick.mp4",
+    "poster": "01-center-poster.jpg"
+  },
+  {
+    "case": {
+      "id": "02-left-front",
+      "bowl": [
+        -0.1,
+        7.32
+      ],
+      "navigation_start": [
+        -0.2,
+        5.95,
+        1.5707963267948966
+      ],
+      "rl_start": [
+        -0.05,
+        6.35,
+        1.5707963267948966
+      ],
+      "reference": "bowl-r020",
+      "camera_offset": [
+        -0.55,
+        0.28,
+        0.85
+      ]
+    },
+    "status": "completed",
+    "started_at": 1792436986.7334354,
+    "grasp_succeeded": true,
+    "placement": {
+      "event": "transport_result",
+      "time": 1792437120.1375058,
+      "passed": true,
+      "carry_mode": "physical",
+      "automatic_attachment": false,
+      "object_position": [
+        1.6044129610061646,
+        5.316766953468322,
+        0.7924724221229553
+      ],
+      "horizontal_error_m": 0.005470540623916695,
+      "released": true,
+      "supported": true,
+      "no_finger_contact": true,
+      "stationary": true,
+      "height_ok": true,
+      "target": [
+        1.6,
+        5.32,
+        0.8
+      ],
+      "verification_seconds": 2.0
+    },
+    "navigation_arrival": {
+      "event": "navigation_arrival",
+      "time": 1792437043.3420565,
+      "requested": [
+        -0.05,
+        6.35,
+        1.5707963267948966
+      ],
+      "actual": [
+        -0.050442230701446544,
+        6.324722620099783,
+        0.025899916887283325
+      ],
+      "yaw": 1.5709392871818328,
+      "point_error_m": 0.025281248043029822,
+      "acceptance": "RL admission checks the actual trained region, posture and rest state"
+    },
+    "error": null,
+    "finished_at": 1792437136.8843527,
+    "elapsed_seconds": 150.15091753005981,
+    "source_run": "results/cram-rl-multiepisode/20261019-left-counter/02-left-front",
+    "fps": 10,
+    "source_frames": 940,
+    "clip_start_frame": 263,
+    "clip_end_frame": 358,
+    "grasp_seconds": 9.5,
+    "rl_started": true,
+    "rl_approach_seconds": 3.1,
+    "fixed_finish_seconds": 6.4,
+    "measured_rl_start": [
+      -0.050807130336761486,
+      6.32514709085226,
+      0.02589985728263855
+    ],
+    "measured_bowl": [
+      -0.09999982714653016,
+      7.319999969005584,
+      0.9774708151817322
+    ],
+    "video_sha256": "13070a9d75aeb9f1112434b9a8f1b5c76e6e9083c8c528fee29e4fc27e0dce39",
+    "full_video": "02-left-front-full.mp4",
+    "grasp_video": "02-left-front-grasp.mp4",
+    "quick_video": "02-left-front-quick.mp4",
+    "poster": "02-left-front-poster.jpg"
+  },
+  {
+    "case": {
+      "id": "03-right-deep",
+      "bowl": [
+        0.42,
+        7.5
+      ],
+      "navigation_start": [
+        0.4,
+        5.7,
+        1.5707963267948966
+      ],
+      "rl_start": [
+        0.55,
+        6.27,
+        1.5707963267948966
+      ],
+      "reference": "bowl-r020",
+      "camera_offset": [
+        -0.55,
+        0.28,
+        0.85
+      ]
+    },
+    "status": "completed",
+    "started_at": 1792437136.919595,
+    "grasp_succeeded": true,
+    "placement": {
+      "event": "transport_result",
+      "time": 1792437273.4599547,
+      "passed": true,
+      "carry_mode": "physical",
+      "automatic_attachment": false,
+      "object_position": [
+        1.5995606660842896,
+        5.316910123825073,
+        0.7924708724021912
+      ],
+      "horizontal_error_m": 0.0031209532303252286,
+      "released": true,
+      "supported": true,
+      "no_finger_contact": true,
+      "stationary": true,
+      "height_ok": true,
+      "target": [
+        1.6,
+        5.32,
+        0.8
+      ],
+      "verification_seconds": 2.0
+    },
+    "navigation_arrival": {
+      "event": "navigation_arrival",
+      "time": 1792437192.8153493,
+      "requested": [
+        0.55,
+        6.27,
+        1.5707963267948966
+      ],
+      "actual": [
+        0.5551780045032502,
+        6.314176669716835,
+        0.02590000629425049
+      ],
+      "yaw": 1.5709332519369013,
+      "point_error_m": 0.044479094841352304,
+      "acceptance": "RL admission checks the actual trained region, posture and rest state"
+    },
+    "error": null,
+    "finished_at": 1792437290.5720963,
+    "elapsed_seconds": 153.65250158309937,
+    "source_run": "results/cram-rl-multiepisode/20261019-left-counter/03-right-deep",
+    "fps": 10,
+    "source_frames": 977,
+    "clip_start_frame": 261,
+    "clip_end_frame": 356,
+    "grasp_seconds": 9.5,
+    "rl_started": true,
+    "rl_approach_seconds": 3.1,
+    "fixed_finish_seconds": 6.4,
+    "measured_rl_start": [
+      0.5542529702186585,
+      6.315840280055999,
+      0.025900065898895264
+    ],
+    "measured_bowl": [
+      0.4200002208352089,
+      7.499999856948852,
+      0.9774708151817322
+    ],
+    "video_sha256": "2add4d249365724d767d9900a07c5cf74aa8cf8ffeca7da7641c9a2e1ac9109a",
+    "full_video": "03-right-deep-full.mp4",
+    "grasp_video": "03-right-deep-grasp.mp4",
+    "quick_video": "03-right-deep-quick.mp4",
+    "poster": "03-right-deep-poster.jpg"
+  },
+  {
+    "case": {
+      "id": "04-left-deep",
+      "bowl": [
+        0.05,
+        7.56
+      ],
+      "navigation_start": [
+        0.15,
+        6.0,
+        1.5707963267948966
+      ],
+      "rl_start": [
+        0.05,
+        6.47,
+        1.5707963267948966
+      ],
+      "reference": "bowl-r020",
+      "camera_offset": [
+        -0.55,
+        0.28,
+        0.85
+      ]
+    },
+    "status": "failed",
+    "started_at": 1792437290.5980105,
+    "grasp_succeeded": false,
+    "placement": null,
+    "navigation_arrival": {
+      "event": "navigation_arrival",
+      "time": 1792437351.614332,
+      "requested": [
+        0.05,
+        6.47,
+        1.5707963267948966
+      ],
+      "actual": [
+        0.040784794092178334,
+        6.52423203587532,
+        0.0258999764919281
+      ],
+      "yaw": 1.5709410306931582,
+      "point_error_m": 0.055009396789144877,
+      "acceptance": "RL admission checks the actual trained region, posture and rest state"
+    },
+    "error": "RuntimeError('Navigate into the trained counter-front region first')",
+    "finished_at": 1792437353.486075,
+    "elapsed_seconds": 62.88806438446045,
+    "source_run": "results/cram-rl-multiepisode/20261019-left-counter/04-left-deep",
+    "fps": 10,
+    "source_frames": 267,
+    "clip_start_frame": 167,
+    "clip_end_frame": 267,
+    "grasp_seconds": 10.0,
+    "rl_started": false,
+    "rl_approach_seconds": 0.0,
+    "fixed_finish_seconds": 0.0,
+    "measured_rl_start": null,
+    "measured_bowl": [
+      0.05000016391277312,
+      7.560000038146972,
+      0.9774708151817322
+    ],
+    "video_sha256": "c4a3ca0c100e2a153675e7bdd2bb092c32fcd9b6126b2e0abdf7432f5136235a",
+    "full_video": "04-left-deep-full.mp4",
+    "grasp_video": "04-left-deep-grasp.mp4",
+    "quick_video": "04-left-deep-quick.mp4",
+    "poster": "04-left-deep-poster.jpg"
+  },
+  {
+    "case": {
+      "id": "05-left-deep-inset",
+      "bowl": [
+        0.05,
+        7.56
+      ],
+      "navigation_start": [
+        0.15,
+        6.0,
+        1.5707963267948966
+      ],
+      "rl_start": [
+        0.05,
+        6.4,
+        1.5707963267948966
+      ],
+      "reference": "bowl-r020",
+      "camera_offset": [
+        -0.55,
+        0.28,
+        0.85
+      ],
+      "retry_of": "04-left-deep",
+      "reason": "Move the requested handover position 7 cm inward after the measured navigation arrival exceeded the trained region; keep the original rejected attempt."
+    },
+    "status": "completed",
+    "started_at": 1792437421.5095327,
+    "grasp_succeeded": true,
+    "placement": {
+      "event": "transport_result",
+      "time": 1792437558.3289938,
+      "passed": true,
+      "carry_mode": "physical",
+      "automatic_attachment": false,
+      "object_position": [
+        1.5953925132751465,
+        5.316446280479431,
+        0.7924791574478149
+      ],
+      "horizontal_error_m": 0.005818917610878926,
+      "released": true,
+      "supported": true,
+      "no_finger_contact": true,
+      "stationary": true,
+      "height_ok": true,
+      "target": [
+        1.6,
+        5.32,
+        0.8
+      ],
+      "verification_seconds": 2.0
+    },
+    "navigation_arrival": {
+      "event": "navigation_arrival",
+      "time": 1792437477.2974436,
+      "requested": [
+        0.05,
+        6.4,
+        1.5707963267948966
+      ],
+      "actual": [
+        0.05730715692043303,
+        6.375945425033569,
+        0.025899797677993774
+      ],
+      "yaw": 1.5709334467415879,
+      "point_error_m": 0.025139950657777736,
+      "acceptance": "RL admission checks the actual trained region, posture and rest state"
+    },
+    "error": null,
+    "finished_at": 1792437575.8613062,
+    "elapsed_seconds": 154.3517735004425,
+    "source_run": "results/cram-rl-multiepisode/20261019-left-counter/05-left-deep-inset",
+    "fps": 10,
+    "source_frames": 966,
+    "clip_start_frame": 263,
+    "clip_end_frame": 362,
+    "grasp_seconds": 9.9,
+    "rl_started": true,
+    "rl_approach_seconds": 3.5,
+    "fixed_finish_seconds": 6.4,
+    "measured_rl_start": [
+      0.05678163766860961,
+      6.377610160410404,
+      0.0258999764919281
+    ],
+    "measured_bowl": [
+      0.05000019371509551,
+      7.560000038146972,
+      0.9774708151817322
+    ],
+    "video_sha256": "bd1f0d441ca145568352f3e52f216789fb6e02b82c1215428aa164510d765eab",
+    "full_video": "05-left-deep-inset-full.mp4",
+    "grasp_video": "05-left-deep-inset-grasp.mp4",
+    "quick_video": "05-left-deep-inset-quick.mp4",
+    "poster": "05-left-deep-inset-poster.jpg"
+  }
+]

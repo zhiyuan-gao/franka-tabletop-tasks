@@ -15,9 +15,13 @@
 <div class="actions">
  <a class="button primary" id="launch" href="https://binder.intel4coro.de/v2/gh/zhiyuan-gao/garmi-mobile-grasp-rl/b602e8d081275d19e507e19ec651fcc32b549c17?urlpath=proxy%2F8781%2F" target="_blank" rel="noopener">Open workspace · GPU pending ↗</a>
  <a class="button" href="https://github.com/zhiyuan-gao/garmi-mobile-grasp-rl/tree/vrb-demo">Source code</a>
+ <a class="button" href="episodes/">Compare five recorded attempts</a>
 </div>
 <p class="hint">The VRB workspace opens successfully, including NeemHub, VS Code and JupyterLab. Live simulation is awaiting GPU access: the session checked on 19 October 2026 had no NVIDIA device available. The complete demo has passed in a separate local GPU container; its recording is available below.</p>
-<div class="media"><video controls playsinline preload="metadata" poster="../videos/garmi_counter_to_table_poster.jpg"><source src="../videos/garmi_counter_to_table.mp4" type="video/mp4"></video><div class="caption"><span>Complete recorded run · original simulation playback speed</span><a href="../videos/garmi_counter_to_table_quick.mp4">Watch the 10× preview</a></div></div>
+<h2>A clearer view of the grasp</h2>
+<div class="media"><video controls playsinline preload="metadata" poster="../videos/garmi_rl_grasp_poster.jpg"><source src="../videos/garmi_rl_grasp.mp4" type="video/mp4"></video><div class="caption"><span>9.2 s · RL approach, then fixed close/lift · original simulation playback rate</span><a href="episodes/">Compare initial positions and outcomes</a></div></div>
+<h2>Complete counter-to-table task</h2>
+<div class="media"><video controls playsinline preload="metadata" poster="../videos/garmi_counter_to_table_poster.jpg"><source src="../videos/garmi_counter_to_table.mp4" type="video/mp4"></video><div class="caption"><span>Complete recorded run · original simulation playback speed</span><a href="../videos/garmi_counter_to_table_quick.mp4">Watch the under-10-second preview</a></div></div>
 <h2>How the task runs</h2>
 <div class="flow">
  <div class="step"><small>01 · CRAM</small><h3>Reach the counter</h3><p>Navigate to the left side of the counter and prepare the arm for policy control.</p></div>
@@ -27,6 +31,6 @@
 </div>
 <h2>Inside the experiment</h2>
 <p class="facts">The policy was trained with <strong>Giskard expert demonstrations, corrective expert labels, and PPO</strong>, using 40 reference grasps and randomized initial states. This interactive demo uses the trained checkpoint 7500 and one fixed, validated left-counter setup with reference bowl-r020.</p>
-<p class="facts">The workspace includes the <strong>Isaac Sim camera view, task progress, NeemHub, VS Code and JupyterLab</strong>. Each run saves its own video and task report. This recorded run passed the physical release, support and stability checks; the bowl's horizontal placement error was approximately 6.7 mm.</p>
+<p class="facts">The workspace includes the <strong>Isaac Sim camera view, task progress, NeemHub, VS Code and JupyterLab</strong>. Each run saves its own video and task report. This recorded run passed the physical release, support and stability checks; the bowl's horizontal placement error was approximately 5.7 mm.</p>
 <footer>VLA and RL Lab · <a href="https://vrb.ease-crc.org/explore-labs/vla-lab/">VRB lab overview</a> · <a href="https://github.com/yxzhan/cram-vrb-lab/tree/dev">CRAM digital twin lab</a></footer>
 </main></body></html>
