@@ -132,6 +132,15 @@
       main { width: min(100% - 20px, 1160px); padding-top: 34px; }
       .gallery { grid-template-columns: 1fr; }
     }
+
+    .garmi-demo { margin-top: 48px; padding: 28px; border: 1px solid var(--border); border-radius: 16px; background: var(--panel); }
+    .garmi-demo h2 { font-size: clamp(1.6rem, 4vw, 2.5rem); }
+    .garmi-demo .garmi-layout { display: grid; grid-template-columns: 1.3fr 1fr; gap: 28px; align-items: center; margin-top: 20px; }
+    .garmi-demo video { width: 100%; height: auto; border-radius: 10px; }
+    .garmi-demo p { color: var(--muted); line-height: 1.65; }
+    .garmi-demo a { color: var(--accent); }
+    .garmi-demo .garmi-button { display: inline-block; margin: 10px 10px 0 0; padding: 11px 17px; border: 1px solid var(--accent); border-radius: 8px; text-decoration: none; font-weight: 650; }
+    @media (max-width: 760px) { .garmi-demo .garmi-layout { grid-template-columns: 1fr; } .garmi-demo { padding: 20px; } }
   </style>
 </head>
 <body>
@@ -230,6 +239,22 @@
           <h2>Nut Pouring</h2>
         </div>
       </article>
+    </section>
+
+    <section class="garmi-demo" id="garmi" aria-labelledby="garmi-heading">
+      <p class="eyebrow">GARMI · CRAM + Reinforcement Learning</p>
+      <h2 id="garmi-heading">From the kitchen counter to the dining table</h2>
+      <div class="garmi-layout">
+        <video controls muted playsinline preload="metadata" poster="videos/garmi_counter_to_table_poster.jpg">
+          <source src="videos/garmi_counter_to_table_quick.mp4" type="video/mp4">
+        </video>
+        <div>
+          <p>CRAM navigates to the counter. A learned policy moves the mobile base and right arm together to approach the bowl. A fixed controller closes the gripper and lifts; CRAM then carries the bowl to the dining table and places it.</p>
+          <p>The demo runs in the complete GARMI apartment in Isaac Sim. The bowl is held by physical finger contact. The preview is shown at 10× simulation playback speed.</p>
+          <a class="garmi-button" href="garmi/">Open GARMI demo</a>
+          <a class="garmi-button" href="videos/garmi_counter_to_table.mp4">Full recording</a>
+        </div>
+      </div>
     </section>
   </main>
 </body>

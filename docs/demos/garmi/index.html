@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GARMI Mobile Grasp · VLA and RL Lab</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#07111f;color:#f4f7fc}*{box-sizing:border-box}body{margin:0}main{width:min(1120px,calc(100% - 36px));margin:auto;padding:34px 0 60px}a{color:#67d9c7}.back{font-size:13px;text-decoration:none}.eyebrow{font-size:12px;font-weight:700;letter-spacing:2px;color:#67d9c7;margin-top:44px}h1{font-size:clamp(32px,5vw,58px);line-height:1.1;letter-spacing:-2px;margin:14px 0 20px;max-width:900px}.summary{font-size:17px;line-height:1.7;color:#aab8cb;max-width:800px}.actions{display:flex;gap:12px;flex-wrap:wrap;margin:28px 0 12px}.button{display:inline-block;padding:13px 19px;border:1px solid #293b58;border-radius:8px;text-decoration:none;font-weight:650}.primary{background:#67d9c7;color:#07111f;border-color:#67d9c7}.hint{font-size:13px;color:#aab8cb;line-height:1.6}.media{margin-top:30px;padding:15px;background:#111d30;border:1px solid #293b58;border-radius:16px}video{display:block;width:100%;max-height:660px;background:#02070e;border-radius:9px}.caption{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:14px 4px 0;color:#aab8cb;font-size:13px}h2{font-size:23px;margin-top:42px}.flow{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.step{padding:20px;background:#111d30;border:1px solid #293b58;border-radius:12px}.step small{color:#67d9c7;font-size:12px}.step h3{font-size:16px;margin:9px 0}.step p{color:#aab8cb;font-size:13px;line-height:1.7;margin:0}.facts{line-height:1.9;color:#aab8cb;max-width:850px}.facts strong{color:#f4f7fc}footer{margin-top:35px;padding-top:20px;border-top:1px solid #293b58;font-size:13px;color:#aab8cb}@media(max-width:700px){.flow{grid-template-columns:1fr 1fr}h1{letter-spacing:-1px}}@media(max-width:420px){.flow{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<a class="back" href="../">← Lab demonstrations</a>
+<p class="eyebrow">GARMI / MOBILE MANIPULATION</p>
+<h1>A learned grasp inside a CRAM household task</h1>
+<p class="summary">Navigate to the kitchen counter, pick up a bowl, and place it on the dining table. Reinforcement learning controls the mobile base and right arm during the grasp approach; CRAM handles navigation, transport and placement.</p>
+<div class="actions">
+ <a class="button primary" id="launch" href="https://binder.intel4coro.de/v2/gh/zhiyuan-gao/garmi-mobile-grasp-rl/b602e8d081275d19e507e19ec651fcc32b549c17?urlpath=proxy%2F8781%2F" target="_blank" rel="noopener">Launch interactive demo ↗</a>
+ <a class="button" href="https://github.com/zhiyuan-gao/garmi-mobile-grasp-rl/tree/vrb-demo">Source code</a>
+</div>
+<p class="hint">The interactive session runs on VRB's GPU infrastructure. Once the workspace opens, use the run button to start a new simulation. The first environment launch can take several minutes.</p>
+<div class="media"><video controls playsinline preload="metadata" poster="../videos/garmi_counter_to_table_poster.jpg"><source src="../videos/garmi_counter_to_table.mp4" type="video/mp4"></video><div class="caption"><span>Complete recorded run · original simulation playback speed</span><a href="../videos/garmi_counter_to_table_quick.mp4">Watch the 10× preview</a></div></div>
+<h2>How the task runs</h2>
+<div class="flow">
+ <div class="step"><small>01 · CRAM</small><h3>Reach the counter</h3><p>Navigate to the left side of the counter and prepare the arm for policy control.</p></div>
+ <div class="step"><small>02 · RL</small><h3>Approach together</h3><p>The policy adjusts the base and seven right-arm joints using robot state and a grasp reference.</p></div>
+ <div class="step"><small>03 · FIXED CONTROLLER</small><h3>Close and lift</h3><p>Close the fingers, lift the bowl, and verify that the physical grasp remains stable.</p></div>
+ <div class="step"><small>04 · CRAM</small><h3>Carry and place</h3><p>Move to the dining table, release the bowl, verify support and stability, and retract the arm.</p></div>
+</div>
+<h2>Inside the experiment</h2>
+<p class="facts">The policy was trained with <strong>Giskard expert demonstrations, corrective expert labels, and PPO</strong>, using 40 reference grasps and randomized initial states. This interactive demo uses the trained checkpoint 7500 and one fixed, validated left-counter setup with reference bowl-r020.</p>
+<p class="facts">The workspace includes the <strong>Isaac Sim camera view, task progress, NeemHub, VS Code and JupyterLab</strong>. Each run saves its own video and task report. This recorded run passed the physical release, support and stability checks; the bowl's horizontal placement error was approximately 6.7 mm.</p>
+<footer>VLA and RL Lab · <a href="https://vrb.ease-crc.org/explore-labs/vla-lab/">VRB lab overview</a> · <a href="https://github.com/yxzhan/cram-vrb-lab/tree/dev">CRAM digital twin lab</a></footer>
+</main></body></html>
