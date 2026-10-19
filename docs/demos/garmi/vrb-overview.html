@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>GARMI · VRB overview content preview</title>
+<style>:root{color-scheme:dark;font-family:system-ui,sans-serif;color:#eef4fc;background:#07111f}*{box-sizing:border-box}body{margin:0}main{max-width:900px;margin:auto;padding:32px 24px 60px}a{color:#67d9c7}p{line-height:1.7}h1{font-size:30px;line-height:1.2}h2{font-size:26px;line-height:1.3}.label{font-size:12px;letter-spacing:1.5px;color:#67d9c7}.note{color:#acbbce}.draft{margin:30px 0;background:#111d30;border:1px solid #293b58;border-radius:12px;padding:24px}video{border-radius:8px}.button{display:inline-block;padding:12px 18px;border:1px solid #67d9c7;border-radius:8px;text-decoration:none;margin:6px 12px 6px 0}.launch{background:#67d9c7;color:#07111f}small{color:#acbbce}@media(max-width:480px){main{padding:24px 16px}.draft{padding:16px}}</style></head><body><main>
+<a href="./">← GARMI demo</a><p class="label">VRB OVERVIEW · CONTENT PREVIEW</p><h1>Prepared content for the VLA and RL Lab</h1>
+<p class="note">The block below can be added alongside the existing Lab content. This is a preview; the VRB overview itself has not been edited.</p>
+<div class="draft"><!-- Append to the existing VLA and RL Lab description. Preserve all existing content. -->
+<section id="garmi-mobile-grasp" aria-labelledby="garmi-mobile-grasp-heading">
+  <h2 id="garmi-mobile-grasp-heading">Reinforcement Learning for Mobile Grasping with GARMI</h2>
+  <p>GARMI coordinates its mobile base and right arm to approach a bowl on a kitchen counter. A policy trained with expert demonstrations and PPO adjusts the base and arm together, using robot state, object pose and a grasp reference. A fixed controller then closes the gripper and lifts the bowl. CRAM handles navigation, transport and placement in the complete GARMI apartment in Isaac Sim.</p>
+  <video controls muted playsinline preload="metadata" style="display:block;width:100%;max-width:760px;height:auto" poster="https://zhiyuan-gao.github.io/franka-tabletop-tasks/demos/videos/garmi_rl_grasp_poster.jpg">
+    <source src="https://zhiyuan-gao.github.io/franka-tabletop-tasks/demos/videos/garmi_rl_grasp.mp4" type="video/mp4">
+    <a href="https://zhiyuan-gao.github.io/franka-tabletop-tasks/demos/videos/garmi_rl_grasp.mp4">Watch the GARMI grasping video</a>
+  </video>
+  <p><small>Grasping excerpt at original simulation playback speed. RL controls the approach; closing and lifting use a fixed controller.</small></p>
+  <p><a href="https://github.com/zhiyuan-gao/garmi-mobile-grasp-rl">Project on GitHub</a> · <a href="https://github.com/zhiyuan-gao/garmi-mobile-grasp-rl/tree/vrb-demo">Interactive demo source</a> · <a href="https://zhiyuan-gao.github.io/franka-tabletop-tasks/demos/videos/garmi_counter_to_table.mp4">Full counter-to-table recording</a></p>
+</section>
+</div>
+<h2>Prepared Enter Lab destination</h2><p class="note">The workspace opens, but the tested VRB session has no NVIDIA GPU available. Live simulation requires GPU access and a final remote run before the overview's Enter Lab button is switched.</p>
+<a id="launch" class="button launch" href="https://binder.intel4coro.de/v2/gh/zhiyuan-gao/garmi-mobile-grasp-rl/b602e8d081275d19e507e19ec651fcc32b549c17?urlpath=proxy%2F8781%2F" target="_blank" rel="noopener">Inspect workspace · GPU pending ↗</a><a class="button" href="vrb-intro-package.zip">Download publishing package</a>
+<p>The package includes the HTML block, plain text, video files, project links and the prepared Enter Lab target. <a href="https://github.com/zhiyuan-gao/garmi-mobile-grasp-rl/blob/vrb-demo/binder/VRB_DEPLOYMENT.md">Deployment status and remaining GPU setup</a>.</p>
+</main></body></html>
